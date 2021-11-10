@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Campground</title>
-</head>
-<body>
+<!-- we'll be injecting this templates content to our boilerplate -->
+<!-- this function is from ejs-mate -->
+<!-- so this function is looking for everything in this template to pass that through as body to our boilerplate -->
+
+<% layout('layouts/boilerplate') %> 
     <h1>Edit Campground</h1>
     <!-- post request to submit  new  campground data  -->
     <!-- name-the name with which our data will be send to the servers  -->
@@ -22,5 +18,3 @@
     <button>Update Campground</button>
  </form>
 <a href="/campgrounds">Back To Campgrounds</a>
-</body>
-</html>

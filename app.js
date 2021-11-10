@@ -1,6 +1,7 @@
  const express = require('express');
  const mongoose = require('mongoose');
  const path = require('path');
+ const ejsMate =require('ejs-mate');
  const methodOverride = require('method-override');
  const Campground= require("./models/campground")
 
@@ -23,11 +24,14 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
  db.once('open', ()=>{
      console.log("Database Connection")
  })
-
+// executing our required express app
  const app = express();
  
+//we need to tell express to use ejs-mate instead of the default engine its relying on
+app.engine('ejs', ejsMate);
 
 app.set('view engine', 'ejs');
+
 app.set('views', path.join(__dirname, 'views'));
 //to get data from our post request as by default our res.body is empty so we need to parse it
 app.use(express.urlencoded({extended:true}));
