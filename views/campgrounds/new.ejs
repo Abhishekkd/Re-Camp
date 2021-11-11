@@ -2,11 +2,12 @@
 <!-- this function is from ejs-mate -->
 <!-- so this function is looking for everything in this template to pass that through as body to our boilerplate -->
 <% layout('layouts/boilerplate') %> 
-    <!-- post request to submit  new  campground data  -->
-    <!-- name-the name with which our data will be send to the servers  -->
+    
  <div class="row">
     <h1 class="text-center">New Campground</h1>
     <div class="col-6 offset-3">
+        <!-- post request to submit  new  campground data  -->
+    <!-- name-the name with which our data will be send to the servers  -->
         <form action="/campgrounds" method="POST">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
