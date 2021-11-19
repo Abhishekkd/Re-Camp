@@ -2,8 +2,9 @@
  const mongoose = require('mongoose');
  const path = require('path');
  const ejsMate =require('ejs-mate');
+ const catchAsync=require('./utils/catchAsync')
  const methodOverride = require('method-override');
- const Campground= require("./models/campground")
+ const Campground= require("./models/campground");
 
 // // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -56,39 +57,45 @@ app.get('/campgrounds/new',(req,res)=>{
 
 //submit our post
 //taking data from req.body.campground and submit that to make our new campground
-app.post('/campgrounds',async(req,res)=>{
+app.post('/campgrounds',catchAsync(async(req,res,next)=>{
     const campground = new Campground(req.body.campground);
     await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`)
-})
+    res.redirect(`/campgrounds/${campground._id}`)     
+}))
 
 
 //show route or show details
 //we'll be using that id to get the corresponding campground
-app.get('/campgrounds/:id',async(req,res)=>{
+app.get('/campgrounds/:id',catchAsync(async(req,res,next)=>{
     const campground = await Campground.findById(req.params.id);// or const {id} = req.params; then we pass in that id directly to findById
     res.render('campgrounds/show',{campground});
-})
+}));
 //serves the update form which will be pre-populated
-app.get("/campgrounds/:id/edit",async (req,res)=>{
+app.get("/campgrounds/:id/edit",catchAsync(async (req,res,next)=>{
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit',{campground});
-}) 
+}));
 //to submit our update data of our campground
-app.put('/campgrounds/:id',async(req,res)=>{
+app.put('/campgrounds/:id',catchAsync(async(req,res)=>{
     const {id} = req.params;
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains
     // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
     //redirecting to our show page of the campground we just updated
     res.redirect(`/campgrounds/${campground._id}`)
-})
+}))
 //to delete campground
-app.delete('/campgrounds/:id',async(req,res)=>{
+app.delete('/campgrounds/:id',catchAsync(async(req,res,next)=>{
     //find using id and then delete
     const {id} =req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+}))
+
+//error handling middleware
+//catch all for any error
+app.use((err,req,res,next)=>{
+    res.send("fuck")
 })
 
  app.listen(3000,()=>{
