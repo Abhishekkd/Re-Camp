@@ -2,6 +2,8 @@
  const mongoose = require('mongoose');
  const path = require('path');
  const ejsMate =require('ejs-mate');
+  //we're destructuring this schema here as we'll be having multiple schemas here
+ const {campgroundSchema}=require('./schemas.js');
  const catchAsync=require('./utils/catchAsync');
  const expressError = require('./utils/ExpressError');
  const methodOverride = require('method-override');
@@ -41,6 +43,25 @@ app.use(express.urlencoded({extended:true}));
 //inside we pass in the sting we want to use for our query string i.e _method
 app.use(methodOverride('_method'));
 
+//defining a middleware function called validateCampground
+const validateCampground = (req,res,next)=>{
+     //passing our data through to our schema(campgroundSchema) to make sure everything in there
+    const {error} = campgroundSchema.validate(req.body);
+    // doing something is we encounter an error
+    if(error){
+        //if theres an error throw new expressError ,it will be caught and passed to our error handler
+        //if theres an error we'll map over error.details array and turn it into string and join it together
+        //inside arg for each element im just going to return the message and join them together with a comma if theres more than one message
+
+        const msg = error.details.map(el=>el.message).join(',');
+        throw new ExpressError(msg,400);
+    }else{
+        //that is if there isn't any error move on to next matching route handler
+        next();
+    }
+}
+
+
 app.get('/',(req,res)=>{
     res.render("home");
 })
@@ -59,9 +80,8 @@ app.get('/campgrounds/new',(req,res)=>{
 
 //submit our post
 //taking data from req.body.campground and submit & saving that to make our new campground
-app.post('/campgrounds',catchAsync(async(req,res,next)=>{
-    if(!req.body.campground) throw new ExpressError('Invalid Campground Data',400);
-    const campground = new Campground(req.body.campground);
+app.post('/campgrounds',validateCampground,catchAsync(async(req,res,next)=>{
+ const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`)     
 }))
@@ -79,7 +99,7 @@ app.get("/campgrounds/:id/edit",catchAsync(async (req,res,next)=>{
     res.render('campgrounds/edit',{campground});
 }));
 //to submit our update data of our campground
-app.put('/campgrounds/:id',catchAsync(async(req,res)=>{
+app.put('/campgrounds/:id',validateCampground,catchAsync(async(req,res)=>{
     const {id} = req.params;
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
