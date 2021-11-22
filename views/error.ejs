@@ -1,0 +1,14 @@
+<!-- our error template -->
+
+<!-- adding this as we need to make sure bootstrap is included and our js and all the other stuff  -->
+<% layout('layouts/boilerplate') %> 
+
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading"><%=err.message %> </h4>
+   
+    <p><%=err.stack %> </p>
+  </div>
+    </div>
+</div>

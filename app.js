@@ -2,9 +2,11 @@
  const mongoose = require('mongoose');
  const path = require('path');
  const ejsMate =require('ejs-mate');
- const catchAsync=require('./utils/catchAsync')
+ const catchAsync=require('./utils/catchAsync');
+ const expressError = require('./utils/ExpressError');
  const methodOverride = require('method-override');
  const Campground= require("./models/campground");
+ const ExpressError = require('./utils/ExpressError');
 
 // // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -56,8 +58,9 @@ app.get('/campgrounds/new',(req,res)=>{
 })
 
 //submit our post
-//taking data from req.body.campground and submit that to make our new campground
+//taking data from req.body.campground and submit & saving that to make our new campground
 app.post('/campgrounds',catchAsync(async(req,res,next)=>{
+    if(!req.body.campground) throw new ExpressError('Invalid Campground Data',400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`)     
@@ -78,6 +81,7 @@ app.get("/campgrounds/:id/edit",catchAsync(async (req,res,next)=>{
 //to submit our update data of our campground
 app.put('/campgrounds/:id',catchAsync(async(req,res)=>{
     const {id} = req.params;
+    //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains
     // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
@@ -92,10 +96,18 @@ app.delete('/campgrounds/:id',catchAsync(async(req,res,next)=>{
     res.redirect('/campgrounds');
 }))
 
+//for paths which aren't their
+app.all('*',(req,res,next)=>{
+    next(new expressError('Page Not Found!!!',404))
+})
+
 //error handling middleware
 //catch all for any error
 app.use((err,req,res,next)=>{
-    res.send("fuck")
+    const {statusCode=500}=err;
+    //instead of destructuring message variable ,(which is just updating the variable
+    //  and it wont update the message we are passing through to our template-only  applicable when theres no message) 
+    res.status(statusCode).render('error',{ err });
 })
 
  app.listen(3000,()=>{
