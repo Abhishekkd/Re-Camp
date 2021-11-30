@@ -9,7 +9,7 @@ const CampgroundSchema = new Schema({
     image:String,
     description : String,
     location: String,
-    //array where we hae object-ids of reviews
+    //array where we have object-ids of reviews
     review:[
         {
             //type set to object id 
