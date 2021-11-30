@@ -8,7 +8,16 @@ const CampgroundSchema = new Schema({
     price:Number,
     image:String,
     description : String,
-    location: String
+    location: String,
+    //array where we hae object-ids of reviews
+    review:[
+        {
+            //type set to object id 
+            type:Schema.Types.ObjectId,
+            //ref set to review model
+            ref: 'Review'
+        }
+    ]
 });
 
 //exporting our whole model without saving its reference to a variable
