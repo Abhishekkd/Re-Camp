@@ -9,6 +9,8 @@
  const methodOverride = require('method-override');
  const Campground= require("./models/campground");
  const ExpressError = require('./utils/ExpressError');
+//  const campground = require('./models/campground');
+ const Review = require('./models/review')
 
 // // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -114,6 +116,24 @@ app.delete('/campgrounds/:id',catchAsync(async(req,res,next)=>{
     const {id} =req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+}))
+
+
+//to submit our  reviews data to servers/db
+app.post('/campgrounds/:id/reviews',catchAsync(async(req,res,next)=>{
+    const campground = await Campground.findById(req.params.id);
+    //on the form we structured it as we gave each input a name prefixed with review and [body or rating]
+    //so our review data is all under the key of review (once its been parsed)
+    const review = new Review(req.body.review);
+    //next pushing review onto campgrounds,i.e on the campgrounds models we set this review array(where we are pushing onto)
+    //which is just bunch of object ids corresponding to a review
+    //so pushing our new review
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    console.log(review);
+    res.redirect(`/campgrounds/${campground._id}`);
+
 }))
 
 //for paths which aren't their
