@@ -3,7 +3,7 @@
  const path = require('path');
  const ejsMate =require('ejs-mate');
   //we're destructuring this schema here as we'll be having multiple schemas here
- const {campgroundSchema}=require('./schemas.js');
+ const {campgroundSchema,reviewSchema}=require('./schemas.js');
  const catchAsync=require('./utils/catchAsync');
  const expressError = require('./utils/ExpressError');
  const methodOverride = require('method-override');
@@ -45,6 +45,8 @@ app.use(express.urlencoded({extended:true}));
 //inside we pass in the sting we want to use for our query string i.e _method
 app.use(methodOverride('_method'));
 
+
+
 //defining a middleware function called validateCampground
 const validateCampground = (req,res,next)=>{
      //passing our data through to our schema(campgroundSchema) to make sure everything in there
@@ -53,7 +55,9 @@ const validateCampground = (req,res,next)=>{
     if(error){
         //if theres an error throw new expressError ,it will be caught and passed to our error handler
         //if theres an error we'll map over error.details array and turn it into string and join it together
-        //inside arg for each element im just going to return the message and join them together with a comma if theres more than one message
+        //inside arg for each element im just going to return the message and join them together with a comma
+        // if theres more than one message
+        //this error object is automatically made by js or express if theirs an error
 
         const msg = error.details.map(el=>el.message).join(',');
         throw new ExpressError(msg,400);
@@ -62,6 +66,20 @@ const validateCampground = (req,res,next)=>{
         next();
     }
 }
+//middleware for validating our review data
+const validateReview=(req,res,next)=>{
+    //hopefully theres a review with rating and body otherwise throw error
+    const {error} =reviewSchema.validate(req.body);
+    if(error){
+        //error.details an array and were mapping over each of its element and joining it
+        const msg = error.details.map(el=>el.message).join(',');
+        throw new ExpressError(msg,400);
+    }else{
+        next();
+    }
+
+}
+
 
 
 app.get('/',(req,res)=>{
@@ -120,7 +138,7 @@ app.delete('/campgrounds/:id',catchAsync(async(req,res,next)=>{
 
 
 //to submit our  reviews data to servers/db
-app.post('/campgrounds/:id/reviews',catchAsync(async(req,res,next)=>{
+app.post('/campgrounds/:id/reviews',validateReview,catchAsync(async(req,res,next)=>{
     const campground = await Campground.findById(req.params.id);
     //on the form we structured it as we gave each input a name prefixed with review and [body or rating]
     //so our review data is all under the key of review (once its been parsed)

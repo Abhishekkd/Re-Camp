@@ -22,4 +22,12 @@ const Joi=require('joi');
             description:Joi.string().required()
         }).required()
     })
-    
+
+//review validations for before submitting it to our db
+module.exports.reviewSchema= Joi.object({
+    //review an object has rating and body as keys and they are number and string
+    review: Joi.object({
+        rating:Joi.number().required().min(1).max(5),
+        body:Joi.string().required()
+    }).required()
+})
