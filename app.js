@@ -110,7 +110,8 @@ app.post('/campgrounds',validateCampground,catchAsync(async(req,res,next)=>{
 //show route or show details
 //we'll be using that id to get the corresponding campground
 app.get('/campgrounds/:id',catchAsync(async(req,res,next)=>{
-    const campground = await Campground.findById(req.params.id);// or const {id} = req.params; then we pass in that id directly to findById
+    const campground = await Campground.findById(req.params.id).populate('reviews');// or const {id} = req.params; then we pass in that id directly to findById
+    // console.log(campground);
     res.render('campgrounds/show',{campground});
 }));
 //serves the update form which will be pre-populated
@@ -149,7 +150,7 @@ app.post('/campgrounds/:id/reviews',validateReview,catchAsync(async(req,res,next
     campground.reviews.push(review);
     await review.save();
     await campground.save();
-    console.log(review);
+    // console.log(review);
     res.redirect(`/campgrounds/${campground._id}`);
 
 }))
