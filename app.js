@@ -5,12 +5,13 @@
   //we're destructuring this schema here as we'll be having multiple schemas here
  const {campgroundSchema,reviewSchema}=require('./schemas.js');
  const catchAsync=require('./utils/catchAsync');
- const expressError = require('./utils/ExpressError');
+//  const expressError = require('./utils/ExpressError');
  const methodOverride = require('method-override');
  const Campground= require("./models/campground");
  const ExpressError = require('./utils/ExpressError');
 //  const campground = require('./models/campground');
- const Review = require('./models/review')
+ const Review = require('./models/review');
+ const campgrounds = require('./routes/campgrounds')
 
 // // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -47,25 +48,7 @@ app.use(methodOverride('_method'));
 
 
 
-//defining a middleware function called validateCampground
-const validateCampground = (req,res,next)=>{
-     //passing our data through to our schema(campgroundSchema) to make sure everything in there
-    const {error} = campgroundSchema.validate(req.body);
-    // doing something is we encounter an error
-    if(error){
-        //if theres an error throw new expressError ,it will be caught and passed to our error handler
-        //if theres an error we'll map over error.details array and turn it into string and join it together
-        //inside arg for each element im just going to return the message and join them together with a comma
-        // if theres more than one message
-        //this error object is automatically made by js or express if theirs an error
 
-        const msg = error.details.map(el=>el.message).join(',');
-        throw new ExpressError(msg,400);
-    }else{
-        //that is if there isn't any error move on to next matching route handler
-        next();
-    }
-}
 //middleware for validating our review data
 const validateReview=(req,res,next)=>{
     //hopefully theres a review with rating and body otherwise throw error
@@ -80,62 +63,17 @@ const validateReview=(req,res,next)=>{
 
 }
 
-
-
+//here's where the campground routes were first laid out
+//adding on our routes onto routers
 app.get('/',(req,res)=>{
     res.render("home");
 })
-//show route or index
-app.get('/campgrounds',async(req,res)=>{
-    // making a new campground based upon our Campground model
-    //finding all campgrounds that are seeding to our database which were made using campground models in our index.js(inside loop)
- const campgrounds = await Campground.find({});
- //we'll be structuring our templates in different folder
- res.render('campgrounds/index',{campgrounds});
-})
-//to create a new campground that is then render a form 
-app.get('/campgrounds/new',(req,res)=>{
-    res.render('campgrounds/new')
-})
 
-//submit our post
-//taking data from req.body.campground and submit & saving that to make our new campground
-app.post('/campgrounds',validateCampground,catchAsync(async(req,res,next)=>{
- const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`)     
-}))
+//specify the router we wanna use which is our campgrounds that we required
+//passing in path that we want our routes to prefix with
+//2->also router we wanna use
+app.use('/campgrounds',campgrounds)
 
-
-//show route or show details
-//we'll be using that id to get the corresponding campground
-app.get('/campgrounds/:id',catchAsync(async(req,res,next)=>{
-    const campground = await Campground.findById(req.params.id).populate('reviews');// or const {id} = req.params; then we pass in that id directly to findById
-    // console.log(campground);
-    res.render('campgrounds/show',{campground});
-}));
-//serves the update form which will be pre-populated
-app.get("/campgrounds/:id/edit",catchAsync(async (req,res,next)=>{
-    const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/edit',{campground});
-}));
-//to submit our update data of our campground
-app.put('/campgrounds/:id',validateCampground,catchAsync(async(req,res)=>{
-    const {id} = req.params;
-    //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
-    const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
-    //into this 2nd argument object which contains
-    // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
-    //redirecting to our show page of the campground we just updated
-    res.redirect(`/campgrounds/${campground._id}`)
-}))
-//to delete campground
-app.delete('/campgrounds/:id',catchAsync(async(req,res,next)=>{
-    //find using id and then delete
-    const {id} =req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect('/campgrounds');
-}))
 
 
 //to submit our  reviews data to servers/db
@@ -167,7 +105,7 @@ app.delete('/campgrounds/:id/reviews/:reviewId',catchAsync(async(req,res,next)=>
 
 //for paths which aren't their
 app.all('*',(req,res,next)=>{
-    next(new expressError('Page Not Found!!!',404))
+    next(new ExpressError('Page Not Found!!!',404))
 })
 
 //error handling middleware
