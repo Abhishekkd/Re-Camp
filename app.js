@@ -2,6 +2,7 @@
  const mongoose = require('mongoose');
  const path = require('path');
  const ejsMate =require('ejs-mate');
+ const session =require('express-session');
   //we're destructuring this schema here as we'll be having multiple schemas here
  const {campgroundSchema,reviewSchema}=require('./schemas.js');
 //  const catchAsync=require('./utils/catchAsync');
@@ -53,9 +54,22 @@ app.use(methodOverride('_method'));
 //joining our current working direct absolute path with public directory
 //so we can run our file from inside of that directory too
 app.use(express.static(path.join(__dirname,'public')));
+//for sessions
+// adding in some configuring object that doesn't exist yet
+const sessionConfig={
+    secret: 'thisShouldBeAnActualSecretInProduction',
+    //setting some options for session otherwise we'll get deprecation error
+    resave : false,
+    saveUninitialized: true,
+    // later on our data store will be mongo,currently its just memory (it juz goes away)
 
-
-
+    //week for it to expire
+    expires:Date.now() + 1000*60*60*24*7,
+    maxAge:1000*60*60*24*7,
+    //juz extra security
+    httpOnly:true,
+}
+app.use(session(sessionConfig));
 
 //here's where the campground routes were first laid out
 //adding on our routes onto routers
@@ -85,5 +99,5 @@ app.use((err,req,res,next)=>{
 })
 
  app.listen(3000,()=>{
-     console.log("Serving u on port 3000")
+     console.log("Listening on 3000")
  })
