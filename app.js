@@ -12,7 +12,7 @@
  const campgrounds = require('./routes/campgrounds')
  const reviews = require('./routes/reviews');
 
-// // database is named farmStand where our collections will be stored and will be created for us
+// database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
 //     .then(()=> {
 //         console.log("Mongo connected")
@@ -24,8 +24,11 @@
 
 mongoose.connect('mongodb://localhost:27017/re-camp',{
     useNewUrlParser: true, 
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    // useFindAndModify:false,
+    // useCreateIndex:true
 });
+
  const db = mongoose.connection;
  db.on("error", console.error.bind(console,"connection error:"));
  db.once('open', ()=>{
@@ -45,7 +48,11 @@ app.use(express.urlencoded({extended:true}));
 //inside we pass in the sting we want to use for our query string i.e _method
 app.use(methodOverride('_method'));
 
-
+//telling express to serve our public directory i.e containing static files
+// app.use(express.static('public'));
+//joining our current working direct absolute path with public directory
+//so we can run our file from inside of that directory too
+app.use(express.static(path.join(__dirname,'public')));
 
 
 

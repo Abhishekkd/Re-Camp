@@ -28,10 +28,7 @@ const validateCampground = (req,res,next)=>{
    }
 }
 
-//adding on our routes onto routers
-router.get('#',(req,res)=>{
-    res.render("home");
-})
+
 //show route or index
 router.get('/',async(req,res)=>{
     // making a new campground based upon our Campground model
