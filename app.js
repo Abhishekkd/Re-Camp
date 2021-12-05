@@ -3,6 +3,7 @@
  const path = require('path');
  const ejsMate =require('ejs-mate');
  const session =require('express-session');
+ const flash = require('connect-flash');
   //we're destructuring this schema here as we'll be having multiple schemas here
  const {campgroundSchema,reviewSchema}=require('./schemas.js');
 //  const catchAsync=require('./utils/catchAsync');
@@ -70,6 +71,16 @@ const sessionConfig={
     httpOnly:true,
 }
 app.use(session(sessionConfig));
+app.use(flash());
+
+//middleware for our flash
+app.use((req,res,next)=>{
+    //so whatever is in there i.e message for now
+    //so on every single request whatever  is in this flash under success
+    // we'll have access to it under the locals in the key success
+   res.locals.success = req.flash('success');
+   next();
+})
 
 //here's where the campground routes were first laid out
 //adding on our routes onto routers

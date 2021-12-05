@@ -48,6 +48,8 @@ router.get('/new',(req,res)=>{
 router.post('/',validateCampground,catchAsync(async(req,res,next)=>{
  const campground = new Campground(req.body.campground);
     await campground.save();
+    //after saving data we'll flash the  message and then redirect
+    req.flash('success', 'Successfully made a new Campground!');
     res.redirect(`/campgrounds/${campground._id}`)     
 }))
 
@@ -57,6 +59,8 @@ router.post('/',validateCampground,catchAsync(async(req,res,next)=>{
 router.get('/:id',catchAsync(async(req,res,next)=>{
     const campground = await Campground.findById(req.params.id).populate('reviews');// or const {id} = req.params; then we pass in that id directly to findById
     // console.log(campground);
+    //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
+    //so that our template have access to that info
     res.render('campgrounds/show',{campground});
 }));
 
