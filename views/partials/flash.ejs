@@ -1,0 +1,17 @@
+<!-- partial for flashing messages and given role of alert for accessibility purposes in bootstrap -->
+<!-- i.e its for screen reader ,they otherwise wouldn't know that there was an alert  -->
+<!-- to make only run when their success we'll add some logic -->
+<!-- by default success its an empty array i.e if their nothing in that success it means its an empty array -->
+<!-- so empty array is not success -->
+<!-- checking for if their is an success and its not empty i.e 0 length is false -->
+
+<% if(success && success.length) {%>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <!-- displaying our success variable -->
+    <%=success %> 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+</div>
+
+<% } %> 
+<!-- we only want this to show up on the page if there is anything in success -->

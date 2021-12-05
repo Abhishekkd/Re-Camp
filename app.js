@@ -79,6 +79,8 @@ app.use((req,res,next)=>{
     //so on every single request whatever  is in this flash under success
     // we'll have access to it under the locals in the key success
    res.locals.success = req.flash('success');
+   //if there's anything in the flash under error
+   res.locals.error = req.flash('error');
    next();
 })
 

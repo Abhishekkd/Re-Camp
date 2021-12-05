@@ -40,6 +40,7 @@ router.post('/',validateReview,catchAsync(async(req,res,next)=>{
     await review.save();
     await campground.save();
     // console.log(review);
+    req.flash('success','Created new review!!');
     res.redirect(`/campgrounds/${campground._id}`);
 
 }))
@@ -50,6 +51,7 @@ router.delete('/:reviewId',catchAsync(async(req,res,next)=>{
    //so i wanna pull from this reviews array inside of campground where review matches to review id
     await Campground.findByIdAndUpdate(id,{$pull: {reviews:reviewId}});
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success','Successfully deleted Review!!')
     res.redirect(`/campgrounds/${id}`);
 }))
 

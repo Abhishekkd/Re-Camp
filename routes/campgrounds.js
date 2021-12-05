@@ -49,7 +49,7 @@ router.post('/',validateCampground,catchAsync(async(req,res,next)=>{
  const campground = new Campground(req.body.campground);
     await campground.save();
     //after saving data we'll flash the  message and then redirect
-    req.flash('success', 'Successfully made a new Campground!');
+    req.flash('success', 'Successfully made a new Campground!!');
     res.redirect(`/campgrounds/${campground._id}`)     
 }))
 
@@ -78,6 +78,7 @@ router.put('/:id',validateCampground,catchAsync(async(req,res)=>{
     //into this 2nd argument object which contains
     // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
     //redirecting to our show page of the campground we just updated
+    req.flash('success','Successfully updated campground!!')
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 //to delete campground
@@ -85,6 +86,7 @@ router.delete('/:id',catchAsync(async(req,res,next)=>{
     //find using id and then delete
     const {id} =req.params;
     await Campground.findByIdAndDelete(id);
+    req.flash('success','Successfully deleted Campground!!' )
     res.redirect('/campgrounds');
 }))
 
