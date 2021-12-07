@@ -34,7 +34,7 @@ router.get('/',async(req,res)=>{
     // making a new campground based upon our Campground model
     //finding all campgrounds that are seeding to our database which were made using campground models in our index.js(inside loop)
  const campgrounds = await Campground.find({});
- //we'll be structuring our templates in different folder
+
  res.render('campgrounds/index',{campgrounds});
 })
 
@@ -61,12 +61,26 @@ router.get('/:id',catchAsync(async(req,res,next)=>{
     // console.log(campground);
     //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
     //so that our template have access to that info
+    if(!campground){
+        //if error ie no campground found redirect to index page
+        //otherwise redirect and redirect normally 
+        req.flash('error','Cannot find requested Campground!!');
+        return res.redirect('/campgrounds');
+    }
     res.render('campgrounds/show',{campground});
+
 }));
 
 //serves the update form which will be pre-populated
 router.get("/:id/edit",catchAsync(async (req,res,next)=>{
     const campground = await Campground.findById(req.params.id);
+    //trying to edit an campground that doesn't exist
+    if(!campground){
+        //if error ie no campground found redirect to index page
+        //otherwise redirect and redirect normally 
+        req.flash('error','Cannot find requested Campground!!');
+        return res.redirect('/campgrounds');
+    }
     res.render('campgrounds/edit',{campground});
 }));
 
