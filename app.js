@@ -13,6 +13,9 @@
  const Review = require('./models/review');
  const campgrounds = require('./routes/campgrounds')
  const reviews = require('./routes/reviews');
+ const passport=require('passport');
+ const LocalStrategy = require('passport-local');
+ const User = require('./models/user')
 
 // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -23,7 +26,7 @@
 //         console.log("oh fuck error");
 //         console.log(err);
 //     })
-
+//connecting to database
 mongoose.connect('mongodb://localhost:27017/re-camp',{
     useNewUrlParser: true, 
     useUnifiedTopology: true,
@@ -42,9 +45,12 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
 //we need to tell express to use ejs-mate instead of the default engine its relying on
 app.engine('ejs', ejsMate);
 
+//configuration for our app
 app.set('view engine', 'ejs');
-
 app.set('views', path.join(__dirname, 'views'));
+
+//middleware's
+
 //to get data from our post request as by default our res.body is empty so we need to parse it
 app.use(express.urlencoded({extended:true}));
 //inside we pass in the sting we want to use for our query string i.e _method
@@ -55,6 +61,7 @@ app.use(methodOverride('_method'));
 //joining our current working direct absolute path with public directory
 //so we can run our file from inside of that directory too
 app.use(express.static(path.join(__dirname,'public')));
+
 //for sessions
 // adding in some configuring object that doesn't exist yet
 const sessionConfig={
@@ -70,8 +77,29 @@ const sessionConfig={
     //juz extra security
     httpOnly:true,
 }
+//using session 
 app.use(session(sessionConfig));
 app.use(flash());
+
+//passport thingy's
+
+app.use(passport.initialize());
+//middleware if we need persistent login sessions and its alternative would be to login on every single request,which is something you'd often 
+//do when u are using api's but not as a user with  an  actual interface 
+app.use(passport.session());
+//passing in our user model
+//this is saying that passport use the localStrategy that we have required or we can also use som other strategy
+// and for that localStrategy the authenticate method(by passport) on user model
+//static method added in automatically like authenticate() on our model by passport-local-mongoose
+passport.use(new LocalStrategy(User.authenticate())) //specifying authentication method
+
+//these next two methods have been added in thanks to our plugin
+
+//this is telling passport how to serialize a user and serialization refers to how do we store a user in session
+passport.serializeUser(User.serializeUser());
+//how do u get user out of that session or un-store or remove a user from a session
+passport.deserializeUser(User.deserializeUser());
+
 
 //middleware for our flash
 app.use((req,res,next)=>{
@@ -88,6 +116,13 @@ app.use((req,res,next)=>{
 //adding on our routes onto routers
 app.get('/',(req,res)=>{
     res.render("home");
+})
+//fake user registration
+app.get('/secret',async(req,res)=>{
+    const user = new User({email: 'deepend@gmail.com',username:'nugget'});
+    const newUser = await User.register(user,'chicken');//providing a user object(instance of our model) and then password
+    //then it takes care of hashing and salting and all that
+    res.send(newUser);
 })
 
 //specify the router we wanna use which is our campgrounds that we required
