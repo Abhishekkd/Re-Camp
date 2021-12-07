@@ -11,12 +11,13 @@
  const Campground= require("./models/campground");
  const ExpressError = require('./utils/ExpressError');
  const Review = require('./models/review');
- const campgrounds = require('./routes/campgrounds')
- const reviews = require('./routes/reviews');
  const passport=require('passport');
  const LocalStrategy = require('passport-local');
  const User = require('./models/user')
 
+ const campgroundRoutes = require('./routes/campgrounds')
+ const reviewRoutes = require('./routes/reviews');
+ const userRoutes = require('./routes/users');
 // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
 //     .then(()=> {
@@ -125,12 +126,16 @@ app.get('/secret',async(req,res)=>{
     res.send(newUser);
 })
 
+
 //specify the router we wanna use which is our campgrounds that we required
 //passing in path that we want our routes to prefix with
 //2->also router we wanna use
-app.use('/campgrounds',campgrounds)
+app.use('/campgrounds',campgroundRoutes)
 //reviews router
-app.use('/campgrounds/:id/reviews',reviews);
+app.use('/campgrounds/:id/reviews',reviewRoutes);
+//users router
+app.use('/',userRoutes);
+
 
 //for paths which aren't their
 app.all('*',(req,res,next)=>{
