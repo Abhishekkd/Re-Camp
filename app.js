@@ -130,11 +130,11 @@ app.get('/secret',async(req,res)=>{
 //specify the router we wanna use which is our campgrounds that we required
 //passing in path that we want our routes to prefix with
 //2->also router we wanna use
-app.use('/campgrounds',campgroundRoutes)
+app.use('/campgrounds', campgroundRoutes)
 //reviews router
-app.use('/campgrounds/:id/reviews',reviewRoutes);
+app.use('/campgrounds/:id/reviews', reviewRoutes);
 //users router
-app.use('/',userRoutes);
+app.use('/', userRoutes);
 
 
 //for paths which aren't their
@@ -142,7 +142,7 @@ app.all('*',(req,res,next)=>{
     next(new ExpressError('Page Not Found!!!',404))
 })
 
-//error handling middleware
+//*error handling middleware
 //catch all for any error
 app.use((err,req,res,next)=>{
     const {statusCode=500}=err;
