@@ -40,6 +40,11 @@ router.get('/',async(req,res)=>{
 
 //to create a new campground that is then render a form 
 router.get('/new',(req,res)=>{
+    //can only be accessible if u're logged in 
+    if(!req.isAuthenticated()){//this method from passport
+        req.flash('error',"you aren't signed in!")
+        res.redirect('/login');
+    }
     res.render('campgrounds/new')
 })
 
