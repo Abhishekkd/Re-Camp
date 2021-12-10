@@ -11,13 +11,17 @@ router.get('/register',(req,res)=>{
 })
 
 //registering a user
-router.post('/register',catchAsync(async(req,res)=>{
+router.post('/register',catchAsync(async(req,res,next)=>{
     try{
     const {email,username,password}=req.body;
     const user = new User({email,username});
     const registeredUser = await User.register(user,password)//takes the entire instance of the user we just made and password which it will hash and salt before storing the result
-        req.flash('success','Welcome to Re-Camp!!');
+     //for actually logging in the user
+        req.login(registeredUser,err=>{ //no await,so had to pass in this callback there wasn't any other choice
+            if(err) return next(err);
+            req.flash('success','Welcome to Re-Camp!!');
         res.redirect('/campgrounds');
+        })
     }catch(e){
         //if there's a problem in registering a user
         req.flash('error',e.message);//this error that we are catching it itself contains an error message
