@@ -37,7 +37,10 @@ router.get('/login',(req,res)=>{
 router.post('/login', passport.authenticate('local',{failureFlash:true,failureRedirect:'/login'}),(req,res)=>{
     //making into this route means successfully logging in
     req.flash('success',"Welcome back!");
-    res.redirect('/campgrounds');
+    //for continuing from where they left off before logging in
+    const redirectUrl =req.session.returnTo || '/campgrounds'; //if their is nothing in returnTo i.e directly going to login page 
+    delete req.session.returnTo;//so theres nothing now in the session returnTo i.e if i refresh ->logout ->then same procedure
+    res.redirect(redirectUrl);
 }
 ); 
 

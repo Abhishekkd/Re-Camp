@@ -111,7 +111,8 @@ app.use((req,res,next)=>{
    res.locals.success = req.flash('success');
    //if there's anything in the flash under error
    res.locals.error = req.flash('error');
-   res.locals.currentUser = req.user;
+   res.locals.currentUser = req.user;//gives info about the user currently logged in
+//    console.log(req.session);
    next();
 })
 
