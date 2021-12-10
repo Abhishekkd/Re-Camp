@@ -103,6 +103,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //middleware for our flash
+//we have access to this on every single template as these are global things
 app.use((req,res,next)=>{
     //so whatever is in there i.e message for now
     //so on every single request whatever  is in this flash under success
@@ -110,6 +111,7 @@ app.use((req,res,next)=>{
    res.locals.success = req.flash('success');
    //if there's anything in the flash under error
    res.locals.error = req.flash('error');
+   res.locals.currentUser = req.user;
    next();
 })
 
@@ -118,7 +120,9 @@ app.use((req,res,next)=>{
 app.get('/',(req,res)=>{
     res.render("home");
 })
-//fake user registration
+
+//?fake user registration
+
 app.get('/secret',async(req,res)=>{
     const user = new User({email: 'deepend@gmail.com',username:'nugget'});
     const newUser = await User.register(user,'chicken');//providing a user object(instance of our model) and then password
