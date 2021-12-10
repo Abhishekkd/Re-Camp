@@ -7,6 +7,8 @@ const Campground= require("../models/campground");
 //.. refers to going back a level then into models or utils directory
  //we're destructuring this schema here as we'll be having multiple schemas here
  const {campgroundSchema,reviewSchema}=require('../schemas.js');
+ //authentication middleware
+ const {isLoggedIn}=require('../authMiddleware');
 
 //defining a middleware function called validateCampground
 const validateCampground = (req,res,next)=>{
@@ -39,18 +41,13 @@ router.get('/',async(req,res)=>{
 })
 
 //to create a new campground that is then render a form 
-router.get('/new',(req,res)=>{
-    //can only be accessible if u're logged in 
-    if(!req.isAuthenticated()){//this method from passport
-        req.flash('error',"you aren't signed in!")
-        res.redirect('/login');
-    }
-    res.render('campgrounds/new')
+router.get('/new',isLoggedIn,(req,res)=>{
+res.render('campgrounds/new')
 })
 
 //submit our post
 //taking data from req.body.campground and submit & saving that to make our new campground
-router.post('/',validateCampground,catchAsync(async(req,res,next)=>{
+router.post('/',isLoggedIn,validateCampground,catchAsync(async(req,res,next)=>{
  const campground = new Campground(req.body.campground);
     await campground.save();
     //after saving data we'll flash the  message and then redirect
@@ -61,7 +58,7 @@ router.post('/',validateCampground,catchAsync(async(req,res,next)=>{
 
 //show route or show details
 //we'll be using that id to get the corresponding campground
-router.get('/:id',catchAsync(async(req,res,next)=>{
+router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
     const campground = await Campground.findById(req.params.id).populate('reviews');// or const {id} = req.params; then we pass in that id directly to findById
     // console.log(campground);
     //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
@@ -77,7 +74,7 @@ router.get('/:id',catchAsync(async(req,res,next)=>{
 }));
 
 //serves the update form which will be pre-populated
-router.get("/:id/edit",catchAsync(async (req,res,next)=>{
+router.get("/:id/edit",isLoggedIn,catchAsync(async (req,res,next)=>{
     const campground = await Campground.findById(req.params.id);
     //trying to edit an campground that doesn't exist
     if(!campground){
@@ -90,7 +87,7 @@ router.get("/:id/edit",catchAsync(async (req,res,next)=>{
 }));
 
 //to submit our update data of our campground
-router.put('/:id',validateCampground,catchAsync(async(req,res)=>{
+router.put('/:id',isLoggedIn,validateCampground,catchAsync(async(req,res)=>{
     const {id} = req.params;
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
@@ -101,7 +98,7 @@ router.put('/:id',validateCampground,catchAsync(async(req,res)=>{
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 //to delete campground
-router.delete('/:id',catchAsync(async(req,res,next)=>{
+router.delete('/:id',isLoggedIn,catchAsync(async(req,res,next)=>{
     //find using id and then delete
     const {id} =req.params;
     await Campground.findByIdAndDelete(id);
