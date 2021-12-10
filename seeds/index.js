@@ -44,6 +44,8 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
         //making new campground each loop through then saving it in a variable thereafter which  to our database
         const price = Math.floor(Math.random()*20)+10;
         const camp = new Campground({
+            //setting all the campgrounds to have author of that id
+            author: "61b0df450ce3370ba40f56f6",
             location:`${cities[random1000].city}, ${cities[random1000].state}`,
             //this should give combination of our two array in seedHelpers.js
             title : `${sample(descriptors)} ${sample(places)}`,

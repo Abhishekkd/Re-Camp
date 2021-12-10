@@ -10,6 +10,11 @@ const CampgroundSchema = new Schema({
     image:String,
     description : String,
     location: String,
+    //adding owner to a campground sort of associating them
+    author:{
+        type:Schema.Types.ObjectId,
+        ref:'User'
+    },
     //array where we have object-ids of reviews
     reviews:[
         {

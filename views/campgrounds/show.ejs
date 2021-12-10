@@ -1,3 +1,4 @@
+<!-- show-template -->
 <!-- we'll be injecting this templates content to our boilerplate -->
 <!-- this function is from ejs-mate -->
 <!-- so this function is looking for everything in this template to pass that through as body to our boilerplate -->
@@ -17,6 +18,9 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item text-muted">
             <%=campground.location %>
+          </li>
+          <li class="list-group-item">Owned by
+            <%=campground.author.username %>
           </li>
           <li class="list-group-item">$<%=campground.price %>/night</li>
         </ul>

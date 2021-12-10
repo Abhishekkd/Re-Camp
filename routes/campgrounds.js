@@ -36,6 +36,7 @@ router.get('/',async(req,res)=>{
     // making a new campground based upon our Campground model
     //finding all campgrounds that are seeding to our database which were made using campground models in our index.js(inside loop)
  const campgrounds = await Campground.find({});
+//  console.log(req.user);
 
  res.render('campgrounds/index',{campgrounds});
 })
@@ -49,6 +50,8 @@ res.render('campgrounds/new')
 //taking data from req.body.campground and submit & saving that to make our new campground
 router.post('/',isLoggedIn,validateCampground,catchAsync(async(req,res,next)=>{
  const campground = new Campground(req.body.campground);
+ //to add owner to the currently created campground
+    campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
     await campground.save();
     //after saving data we'll flash the  message and then redirect
     req.flash('success', 'Successfully made a new Campground!!');
@@ -59,8 +62,8 @@ router.post('/',isLoggedIn,validateCampground,catchAsync(async(req,res,next)=>{
 //show route or show details
 //we'll be using that id to get the corresponding campground
 router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
-    const campground = await Campground.findById(req.params.id).populate('reviews');// or const {id} = req.params; then we pass in that id directly to findById
-    // console.log(campground);
+    const campground = await Campground.findById(req.params.id).populate('reviews').populate('author');// or const {id} = req.params; then we pass in that id directly to findById
+    console.log(campground);
     //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
     //so that our template have access to that info
     if(!campground){

@@ -12,10 +12,13 @@ module.exports.descriptors = [
     'Misty',
     'Elk',
     'Grizzly',
+    'Silent',
+    'Desolated',
     'Ocean',
     'Sea',
     'Sky',
     'Dusty',
+    'Meadow',
     'Diamond'
 ]
 
