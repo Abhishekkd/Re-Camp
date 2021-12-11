@@ -13,6 +13,7 @@ router.route('/register')
 //registering a user
         .post(catchAsync(users.register));
 
+        
 router.route('/login')
     //serve our login form 
         .get(users.renderLogin)
