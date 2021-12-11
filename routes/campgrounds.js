@@ -1,6 +1,8 @@
 //campground router contains its routes
 const express = require('express');
 const router = express.Router();
+//campground object that represents our campground controller
+const campgrounds = require('../controllers/campgrounds');
 const catchAsync=require('../utils/catchAsync');
 const Campground= require("../models/campground");
  //authentication and authorization middleware's
@@ -9,53 +11,18 @@ const Campground= require("../models/campground");
 
 
 //show route or index
-router.get('/',async(req,res)=>{
-    // making a new campground based upon our Campground model
-    //finding all campgrounds that are seeding to our database which were made using campground models in our index.js(inside loop)
- const campgrounds = await Campground.find({});
-//  console.log(req.user);
-
- res.render('campgrounds/index',{campgrounds});
-})
+router.get('/',catchAsync(campgrounds.index));
 
 //to create a new campground that is then render a form 
-router.get('/new',isLoggedIn,(req,res)=>{
-res.render('campgrounds/new')
-})
+router.get('/new',isLoggedIn,campgrounds.renderNewForm);
 
-//submit our post
-//taking data from req.body.campground and submit & saving that to make our new campground
-router.post('/',isLoggedIn,validateCampground,catchAsync(async(req,res,next)=>{
- const campground = new Campground(req.body.campground);
- //to add owner to the currently created campground
-    campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
-    await campground.save();
-    //after saving data we'll flash the  message and then redirect
-    req.flash('success', 'Successfully made a new Campground!!');
-    res.redirect(`/campgrounds/${campground._id}`)     
-}))
+//submit our post to create a campground
+router.post('/',isLoggedIn,validateCampground,catchAsync(campgrounds.createCampground));
 
 
 //show route or show details
 //we'll be using that id to get the corresponding campground
-router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
-    const campground = await Campground.findById(req.params.id).populate({//providing in here an object  
-      path:'reviews',populate:{ //first populating campgrounds with reviews and then on each of those reviews populating their author 
-            path:'author'
-        }
-    }).populate('author');// or const {id} = req.params; then we pass in that id directly to findById
-    // console.log(campground);
-    //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
-    //so that our template have access to that info
-    if(!campground){
-        //if error ie no campground found redirect to index page
-        //otherwise redirect and redirect normally 
-        req.flash('error','Cannot find requested Campground!!');
-        return res.redirect('/campgrounds');
-    }
-    res.render('campgrounds/show',{campground});
-
-}));
+router.get('/:id'/*,isLoggedIn*/,catchAsync(campgrounds.showCampground));
 
 //serves the update form which will be pre-populated
 router.get("/:id/edit",isLoggedIn,isAuthor,catchAsync(async (req,res,next)=>{
