@@ -1,34 +1,11 @@
 //campground router contains its routes
 const express = require('express');
 const router = express.Router();
-const ExpressError = require('../utils/ExpressError');
 const catchAsync=require('../utils/catchAsync');
 const Campground= require("../models/campground");
-//.. refers to going back a level then into models or utils directory
- //we're destructuring this schema here as we'll be having multiple schemas here
- const {campgroundSchema,reviewSchema}=require('../schemas.js');
- //authentication middleware
- const {isLoggedIn}=require('../authMiddleware');
+ //authentication and authorization middleware's
+ const {isLoggedIn,isAuthor,validateCampground}=require('../authMiddleware');
 
-//defining a middleware function called validateCampground
-const validateCampground = (req,res,next)=>{
-    //passing our data through to our schema(campgroundSchema) to make sure everything in there
-   const {error} = campgroundSchema.validate(req.body);
-   // doing something is we encounter an error
-   if(error){
-       //if theres an error throw new expressError ,it will be caught and passed to our error handler
-       //if theres an error we'll map over error.details array and turn it into string and join it together
-       //inside arg for each element im just going to return the message and join them together with a comma
-       // if theres more than one message
-       //this error object is automatically made by js or express if theirs an error
-
-       const msg = error.details.map(el=>el.message).join(',');
-       throw new ExpressError(msg,400);
-   }else{
-       //that is if there isn't any error move on to next matching route handler
-       next();
-   }
-}
 
 
 //show route or index
@@ -77,7 +54,8 @@ router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
 }));
 
 //serves the update form which will be pre-populated
-router.get("/:id/edit",isLoggedIn,catchAsync(async (req,res,next)=>{
+router.get("/:id/edit",isLoggedIn,isAuthor,catchAsync(async (req,res,next)=>{
+    //we could just get away with just doing isAuthor but idLoggedIn allows us to provide more specific feedback
     const campground = await Campground.findById(req.params.id);
     //trying to edit an campground that doesn't exist
     if(!campground){ //this just to make sure there si a campground that we found
@@ -87,30 +65,22 @@ router.get("/:id/edit",isLoggedIn,catchAsync(async (req,res,next)=>{
         return res.redirect('/campgrounds');
     }//then if there is a campground then we check to see if u own it
      //permissions
-     // only editing campgrounds that are allowed
-     if(!campground.author.equals(req.user._id)){
-        //if the id is same then only we'll let u update the campground otherwise error
-        req.flash('error','Not Allowed!!!')
-       return  res.redirect(`/campgrounds/${req.params.id}`)
+    //  // only editing campgrounds that are allowed
+    //  if(!campground.author.equals(req.user._id)){
+    //     //if the id is same then only we'll let u update the campground otherwise error
+    //     req.flash('error','Not Allowed!!!')
+    //    return  res.redirect(`/campgrounds/${req.params.id}`)
 
-    }
+    
    
     res.render('campgrounds/edit',{campground});
 }));
 
 //to submit our update data of our campground
-router.put('/:id',isLoggedIn,validateCampground,catchAsync(async(req,res)=>{
+router.put('/:id',isLoggedIn,isAuthor,validateCampground,catchAsync(async(req,res)=>{
     const {id} = req.params;
-    const campground = await Campground.findById(id);
-    //permissions
-    if(!campground.author.equals(req.user._id)){
-        //if the id is same then only we'll let u update the campground otherwise error
-        req.flash('error','Not Allowed!!!')
-       return  res.redirect(`/campgrounds/${id}`)
-
-    }
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
-    const camp = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
+    const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains
     // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
     //redirecting to our show page of the campground we just updated
@@ -118,7 +88,7 @@ router.put('/:id',isLoggedIn,validateCampground,catchAsync(async(req,res)=>{
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 //to delete campground
-router.delete('/:id',isLoggedIn,catchAsync(async(req,res,next)=>{
+router.delete('/:id',isLoggedIn,isAuthor,catchAsync(async(req,res,next)=>{
     //find using id and then delete
     const {id} =req.params;
     await Campground.findByIdAndDelete(id);

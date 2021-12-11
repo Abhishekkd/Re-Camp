@@ -5,27 +5,16 @@ const router = express.Router({mergeParams:true});
 //our models
 const Campground= require("../models/campground");
 const Review = require('../models/review');
-//joi schema not mongoose
-const {reviewSchema}=require('../schemas.js');
+//middleware's
+const {validateReview} = require('../authMiddleware');
+
 
 const ExpressError = require('../utils/ExpressError');
 const catchAsync=require('../utils/catchAsync');
 
 
 
-//middleware for validating our review data
-const validateReview=(req,res,next)=>{
-    //hopefully theres a review with rating and body otherwise throw error
-    const {error} =reviewSchema.validate(req.body);
-    if(error){
-        //error.details an array and were mapping over each of its element and joining it
-        const msg = error.details.map(el=>el.message).join(',');
-        throw new ExpressError(msg,400);
-    }else{
-        next();
-    }
 
-}
 
 //to submit our  reviews data to servers/db
 router.post('/',validateReview,catchAsync(async(req,res,next)=>{
