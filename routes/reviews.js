@@ -6,7 +6,7 @@ const router = express.Router({mergeParams:true});
 const Campground= require("../models/campground");
 const Review = require('../models/review');
 //middleware's
-const {validateReview} = require('../authMiddleware');
+const {validateReview,isLoggedIn} = require('../authMiddleware');
 
 
 const ExpressError = require('../utils/ExpressError');
@@ -17,7 +17,7 @@ const catchAsync=require('../utils/catchAsync');
 
 
 //to submit our  reviews data to servers/db
-router.post('/',validateReview,catchAsync(async(req,res,next)=>{
+router.post('/',isLoggedIn,validateReview,catchAsync(async(req,res,next)=>{
     const campground = await Campground.findById(req.params.id);
     //on the form we structured it as we gave each input a name prefixed with review and [body or rating]
     //so our review data is all under the key of review (once its been parsed)
@@ -26,8 +26,11 @@ router.post('/',validateReview,catchAsync(async(req,res,next)=>{
     //which is just bunch of object ids corresponding to a review
     //so pushing our new review
     campground.reviews.push(review);
+    //setting owner to a particular review
+    review.author = req.user._id;
+    // console.log(req.user);
     await review.save();
-    await campground.save();
+    await campground.save();//saving campground as well cause we are storing a reference to the review in the campground array called reviews
     // console.log(review);
     req.flash('success','Created new review!!');
     res.redirect(`/campgrounds/${campground._id}`);
