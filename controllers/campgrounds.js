@@ -17,7 +17,6 @@ module.exports.renderNewForm = (req,res)=>{
 //post route to create a new campgrounds
 module.exports.createCampground = async(req,res,next)=>{
     //taking data from req.body.campground and submit & saving that to make our new campground
-
     const campground = new Campground(req.body.campground);
     //to add owner to the currently created campground
        campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
@@ -45,5 +44,43 @@ module.exports.showCampground=async(req,res,next)=>{
         return res.redirect('/campgrounds');
     }
     res.render('campgrounds/show',{campground});
+};
 
-};  
+//serves the update form which will be pre-populated
+module.exports.renderEditForm = async (req,res,next)=>{
+    //we could just get away with just doing isAuthor but idLoggedIn allows us to provide more specific feedback
+    const campground = await Campground.findById(req.params.id);
+    //trying to edit an campground that doesn't exist
+    if(!campground){ //this just to make sure there si a campground that we found
+        //if error ie no campground found redirect to index page
+        //otherwise redirect and redirect normally 
+        req.flash('error','Cannot find requested Campground!!');
+        return res.redirect('/campgrounds');
+    }//then if there is a campground then we check to see if u own it
+     //permissions
+    //  // only editing campgrounds that are allowed
+    //  if(!campground.author.equals(req.user._id)){
+    //     //if the id is same then only we'll let u update the campground otherwise error
+    //     req.flash('error','Not Allowed!!!')
+    //    return  res.redirect(`/campgrounds/${req.params.id}`)
+     res.render('campgrounds/edit',{campground});
+};
+
+module.exports.updateCampground = async(req,res)=>{
+    const {id} = req.params;
+    //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
+    const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
+    //into this 2nd argument object which contains
+    // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
+    //redirecting to our show page of the campground we just updated
+    req.flash('success','Successfully updated campground!!')
+    res.redirect(`/campgrounds/${campground._id}`)
+}
+
+module.exports.deleteCampground = async(req,res,next)=>{
+    //find using id and then delete
+    const {id} =req.params;
+    await Campground.findByIdAndDelete(id);
+    req.flash('success','Successfully deleted Campground!!' )
+    res.redirect('/campgrounds');
+}
