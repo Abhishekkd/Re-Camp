@@ -63,7 +63,7 @@ router.post('/',isLoggedIn,validateCampground,catchAsync(async(req,res,next)=>{
 //we'll be using that id to get the corresponding campground
 router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
     const campground = await Campground.findById(req.params.id).populate('reviews').populate('author');// or const {id} = req.params; then we pass in that id directly to findById
-    console.log(campground);
+    // console.log(campground);
     //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
     //so that our template have access to that info
     if(!campground){
@@ -80,20 +80,37 @@ router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
 router.get("/:id/edit",isLoggedIn,catchAsync(async (req,res,next)=>{
     const campground = await Campground.findById(req.params.id);
     //trying to edit an campground that doesn't exist
-    if(!campground){
+    if(!campground){ //this just to make sure there si a campground that we found
         //if error ie no campground found redirect to index page
         //otherwise redirect and redirect normally 
         req.flash('error','Cannot find requested Campground!!');
         return res.redirect('/campgrounds');
+    }//then if there is a campground then we check to see if u own it
+     //permissions
+     // only editing campgrounds that are allowed
+     if(!campground.author.equals(req.user._id)){
+        //if the id is same then only we'll let u update the campground otherwise error
+        req.flash('error','Not Allowed!!!')
+       return  res.redirect(`/campgrounds/${req.params.id}`)
+
     }
+   
     res.render('campgrounds/edit',{campground});
 }));
 
 //to submit our update data of our campground
 router.put('/:id',isLoggedIn,validateCampground,catchAsync(async(req,res)=>{
     const {id} = req.params;
+    const campground = await Campground.findById(id);
+    //permissions
+    if(!campground.author.equals(req.user._id)){
+        //if the id is same then only we'll let u update the campground otherwise error
+        req.flash('error','Not Allowed!!!')
+       return  res.redirect(`/campgrounds/${id}`)
+
+    }
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
-    const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
+    const camp = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains
     // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
     //redirecting to our show page of the campground we just updated
