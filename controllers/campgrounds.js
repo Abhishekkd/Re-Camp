@@ -1,6 +1,8 @@
 //our show campground logic
 const Campground= require("../models/campground");
 
+
+
 module.exports.index = async(req,res)=>{
     // making a new campground based upon our Campground model
     //finding all campgrounds that are seeding to our database which were made using campground models in our index.js(inside loop)
@@ -9,6 +11,7 @@ module.exports.index = async(req,res)=>{
 
  res.render('campgrounds/index',{campgrounds});
 }
+
 
 //show edit form
 module.exports.renderNewForm = (req,res)=>{
@@ -25,6 +28,7 @@ module.exports.createCampground = async(req,res,next)=>{
        req.flash('success', 'Successfully made a new Campground!!');
        res.redirect(`/campgrounds/${campground._id}`)     
    }
+
 
  //show route or show details
 //we'll be using that id to get the corresponding campground
@@ -46,6 +50,7 @@ module.exports.showCampground=async(req,res,next)=>{
     res.render('campgrounds/show',{campground});
 };
 
+
 //serves the update form which will be pre-populated
 module.exports.renderEditForm = async (req,res,next)=>{
     //we could just get away with just doing isAuthor but idLoggedIn allows us to provide more specific feedback
@@ -66,6 +71,8 @@ module.exports.renderEditForm = async (req,res,next)=>{
      res.render('campgrounds/edit',{campground});
 };
 
+
+//to submit our update data of our campground
 module.exports.updateCampground = async(req,res)=>{
     const {id} = req.params;
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
@@ -77,6 +84,8 @@ module.exports.updateCampground = async(req,res)=>{
     res.redirect(`/campgrounds/${campground._id}`)
 }
 
+
+//to delete campground
 module.exports.deleteCampground = async(req,res,next)=>{
     //find using id and then delete
     const {id} =req.params;
