@@ -9,27 +9,32 @@ const Campground= require("../models/campground");
  const {isLoggedIn,isAuthor,validateCampground}=require('../authMiddleware');
 
 
-
+router.route('/')
 //show route or index
-router.get('/',
-        catchAsync(campgrounds.index));
+        .get(catchAsync(campgrounds.index))
+//submit our post to create a campground
+        .post(isLoggedIn,validateCampground,
+        catchAsync(campgrounds.createCampground));
 
 //to create a new campground that is then render a form 
 router.get('/new',
         isLoggedIn,
         campgrounds.renderNewForm);
 
-//submit our post to create a campground
-router.post('/',
-        isLoggedIn,
-        validateCampground,
-        catchAsync(campgrounds.createCampground));
-
-
+router.route('/:id')
 //show route or show details
 //we'll be using that id to get the corresponding campground
-router.get('/:id'/*,isLoggedIn*/,
-        catchAsync(campgrounds.showCampground));
+        .get(/*,isLoggedIn*/catchAsync(campgrounds.showCampground))
+//to submit our update data of our campground
+        .put(
+        isLoggedIn,
+        isAuthor,
+        validateCampground,catchAsync(campgrounds.updateCampground))
+//to delete campground
+        .delete(
+        isLoggedIn,
+        isAuthor,
+        catchAsync(campgrounds.deleteCampground));
 
 //serves the update form which will be pre-populated
 router.get("/:id/edit",
@@ -37,16 +42,8 @@ router.get("/:id/edit",
         isAuthor,
         catchAsync(campgrounds.renderEditForm));
 
-//to submit our update data of our campground
-router.put('/:id',
-        isLoggedIn,
-        isAuthor,
-        validateCampground,catchAsync(campgrounds.updateCampground));
 
-//to delete campground
-router.delete('/:id',
-        isLoggedIn,
-        isAuthor,
-        catchAsync(campgrounds.deleteCampground));
+
+
 
 module.exports = router;
