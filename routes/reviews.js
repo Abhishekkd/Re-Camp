@@ -6,7 +6,7 @@ const router = express.Router({mergeParams:true});
 const Campground= require("../models/campground");
 const Review = require('../models/review');
 //middleware's
-const {validateReview,isLoggedIn} = require('../authMiddleware');
+const {validateReview,isLoggedIn,isReviewAuthor} = require('../authMiddleware');
 
 
 const ExpressError = require('../utils/ExpressError');
@@ -38,7 +38,8 @@ router.post('/',isLoggedIn,validateReview,catchAsync(async(req,res,next)=>{
 }))
 
 //for deleting reviews
-router.delete('/:reviewId',catchAsync(async(req,res,next)=>{
+//isReviewAuthor is here as to make sure that they still cant make delete requests
+router.delete('/:reviewId',isLoggedIn,isReviewAuthor,catchAsync(async(req,res,next)=>{
    const {id,reviewId} = req.params;
    //so i wanna pull from this reviews array inside of campground where review matches to review id
     await Campground.findByIdAndUpdate(id,{$pull: {reviews:reviewId}});

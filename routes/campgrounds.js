@@ -39,7 +39,11 @@ router.post('/',isLoggedIn,validateCampground,catchAsync(async(req,res,next)=>{
 //show route or show details
 //we'll be using that id to get the corresponding campground
 router.get('/:id'/*,isLoggedIn*/,catchAsync(async(req,res,next)=>{
-    const campground = await Campground.findById(req.params.id).populate('reviews').populate('author');// or const {id} = req.params; then we pass in that id directly to findById
+    const campground = await Campground.findById(req.params.id).populate({//providing in here an object  
+      path:'reviews',populate:{ //first populating campgrounds with reviews and then on each of those reviews populating their author 
+            path:'author'
+        }
+    }).populate('author');// or const {id} = req.params; then we pass in that id directly to findById
     // console.log(campground);
     //as we are redirecting to here after creating a campground then to flash the message or display it we need to pass that through
     //so that our template have access to that info

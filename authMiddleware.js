@@ -1,6 +1,7 @@
 const {campgroundSchema,reviewSchema}=require('./schemas');//joi joi js object schema and thats just validating data from req.body
 const ExpressError = require('./utils/ExpressError');
 const Campground= require('./models/campground');
+const Review = require('./models/review')
 //reviews
 // //joi schema not mongoose
 // const {reviewSchema}=require('../schemas.js');
@@ -11,7 +12,7 @@ module.exports.isLoggedIn = (req,res,next)=>{
 //     //i.e session contains serialized info passport gonna deserialized it the and fill in req.user with that data
 
 
- //can only be accessible if u're logged in 
+ //for things can only be accessible if u're logged in
  if(!req.isAuthenticated()){//this method from passport
     //so as to resume the page from where user left off before  logging in
     req.session.returnTo=req.originalUrl;//we can add in whatever we want in session
@@ -69,4 +70,18 @@ module.exports.validateReview=(req,res,next)=>{
         next();
     }
 
+}
+
+module.exports.isReviewAuthor = async(req,res,next)=>{
+    const {id,reviewId} = req.params; // from route "/:reviewId"
+    const review = await Review.findById(reviewId);
+    //permissions
+    if(!review.author.equals(req.user._id)){
+        //if the id is same then only we'll let u update or edit or delete the campground otherwise error
+        req.flash('error','Not Allowed!!!')
+       return  res.redirect(`/campgrounds/${id}`)
+
+    }
+    //next() if user does have permissions to change the campground
+    next();
 }
