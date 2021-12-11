@@ -13,7 +13,9 @@ router.route('/')
 //show route or index
         .get(catchAsync(campgrounds.index))
 //submit our post to create a campground
-        .post(isLoggedIn,validateCampground,
+        .post(
+        isLoggedIn,
+        validateCampground,
         catchAsync(campgrounds.createCampground));
 
 //to create a new campground that is then render a form 

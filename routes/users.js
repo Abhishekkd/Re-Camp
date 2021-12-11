@@ -7,30 +7,21 @@ const passport = require('passport');
 const users = require('../controllers/users');
 
 
+router.route('/register')
 //render a form i.e show login form
-router.get('/register',
-        users.renderRegister);
-
-
+        .get(users.renderRegister)
 //registering a user
-router.post('/register',
-        catchAsync(users.register));
+        .post(catchAsync(users.register));
 
-
-//serve our login form 
-router.get('/login',
-        users.renderLogin);
-
-
-//to login
-router.post('/login',
-         passport.authenticate('local',{failureFlash:true,failureRedirect:'/login'}),
-         users.login); 
+router.route('/login')
+    //serve our login form 
+        .get(users.renderLogin)
+    //to login
+         .post( passport.authenticate('local',{failureFlash:true,failureRedirect:'/login'}),users.login); 
 
 
 //to logout
-router.get('/logout',
-        users.logout);
+router.get('/logout',users.logout);
 
 
 module.exports = router;        
