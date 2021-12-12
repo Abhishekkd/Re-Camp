@@ -9,8 +9,9 @@ const Campground= require("../models/campground");
  const {isLoggedIn,isAuthor,validateCampground}=require('../authMiddleware');
 //for our multer middleware
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' });//uploads is destination for our uploads
-
+const {storage} =require('../cloudinary')//we dont need to add /index.js here cause node.js by default looks for index.js files
+const upload = multer({ storage });//uploads is destination for our uploads but we wanna it to be cloudinary
+//telling multer to store things in storage that we just required
 router.route('/')
 //show route or index
         .get(catchAsync(campgrounds.index))

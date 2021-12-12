@@ -1,7 +1,8 @@
+ //not in production i.e currently we are in development phase
  if(process.env.NODE_ENV !== "production"){
      require('dotenv').config();
  }
- console.log(process.env.SECRET);
+//  console.log(process.env.SECRET);
 
  const express = require('express');
  const mongoose = require('mongoose');
