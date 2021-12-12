@@ -7,14 +7,23 @@ const catchAsync=require('../utils/catchAsync');
 const Campground= require("../models/campground");
  //authentication and authorization middleware's
  const {isLoggedIn,isAuthor,validateCampground}=require('../authMiddleware');
-
+//for our multer middleware
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' });//uploads is destination for our uploads
 
 router.route('/')
 //show route or index
         .get(catchAsync(campgrounds.index))
 //submit our post to create a campground
-        .post(isLoggedIn,validateCampground,
-        catchAsync(campgrounds.createCampground));
+        // .post(isLoggedIn,validateCampground,
+        // catchAsync(campgrounds.createCampground));
+        .post(upload.array('image'),(req,res)=>{ //image is the piece of the form data,the multer will look for and that data is a file
+                console.log(req.body,req.files);
+                res.send("nice");
+                //array-multiple files stored on req.files
+                //so multer is just going to parse that form data ,its looking for image here ,and it'll treat that as files
+                //and that's what its supposed to be
+        })
 
 //to create a new campground that is then render a form 
 router.get('/new',
