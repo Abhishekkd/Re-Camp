@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params:{
         folder: 'ReCamp', //this is the folder in cloudinary that we should store things in
-        allowedFormats:['jpeg','png','jpg']
+        allowedFormats:['jpeg','png','jpg','jfif']
     }
 })
 //this cloudinaryStorage is now configured,its set up so that it has the credentials for out particular cloudinary account 
