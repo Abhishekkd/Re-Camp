@@ -7,7 +7,12 @@ const Review = require('./review');
 const CampgroundSchema = new Schema({
     title:String,
     price:Number,
-    image:String,
+    images :[ //can store multiple images
+        {//each document now has a url and a filename
+            url: String,
+            filename:String
+        }
+    ],
     description : String,
     location: String,
     //adding owner to a campground sort of associating them

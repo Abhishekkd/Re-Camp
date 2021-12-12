@@ -13,10 +13,12 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     //we need to pass in the cloudinary object we just configured
     cloudinary,
-    folder: 'ReCamp', //this is the folder in cloudinary that we should store things in
-    allowedFormats:['jpeg','png','jpg']
+    params:{
+        folder: 'ReCamp', //this is the folder in cloudinary that we should store things in
+        allowedFormats:['jpeg','png','jpg']
+    }
 })
-//this cloudinaryStorage is now configured,its set up so that it has the credentials for out particular cloudianry account 
+//this cloudinaryStorage is now configured,its set up so that it has the credentials for out particular cloudinary account 
 
 module.exports = {
     cloudinary,

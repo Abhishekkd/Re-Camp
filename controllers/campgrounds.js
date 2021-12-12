@@ -19,11 +19,18 @@ module.exports.renderNewForm = (req,res)=>{
     }
 //post route to create a new campgrounds
 module.exports.createCampground = async(req,res,next)=>{
-    //taking data from req.body.campground and submit & saving that to make our new campground
+//taking data from req.body.campground and submit & saving that to make our new campground
     const campground = new Campground(req.body.campground);
+
+//map over those files and for each one of them and for each one of them we want to take the path
+// and the file name and add them into campground
+    campground.images = req.files.map(f=>({url:f.path,filename:f.filename})) //i.e just taking the path and filename o make a new array (4images=4elements)
+//for each element of files map over and return an array containing object of containing path and filename
+
     //to add owner to the currently created campground
        campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
        await campground.save();
+       console.log(campground);
        //after saving data we'll flash the  message and then redirect
        req.flash('success', 'Successfully made a new Campground!!');
        res.redirect(`/campgrounds/${campground._id}`)     
