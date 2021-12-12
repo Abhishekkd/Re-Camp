@@ -3,6 +3,8 @@
 <!-- this function is from ejs-mate -->
 <!-- so this function is looking for everything in this template to pass that through as body to our boilerplate -->
 <% layout('layouts/boilerplate') %>
+<!-- path didn't start with public as we directly are serving public directory  -->
+<link rel="stylesheet" href="/stylesheets/star-heartbeat.css">
   <div class="row">
     <div class="col-8 ">
       <div class="card mb-3">
@@ -65,8 +67,10 @@
       <% for(let review of campground.reviews) {%> 
     <div class="card mb-3">
       <div class="card-body">
-        <h5 class="card-title">Rating: <%= review.rating %> </h5>
-        <h6 class="card-subtitle mb-2 text-muted"><%= review.author.username %> </h6>
+        <h5 class="card-title text-muted"><%= review.author.username %> </h5>
+        <p class="starability-result" data-rating="<%=review.rating %>">
+          Rated: <%=review.rating%> stars
+        </p>
         <p class="card-text">Review: <%= review.body %> </p>
          <!-- so if current user exists and user ids or their are same are equal then show delete option -->
          <% if(currentUser && review.author.equals(currentUser._id)){ %>
