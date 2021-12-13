@@ -5,6 +5,8 @@
 <% layout('layouts/boilerplate') %>
 <!-- path didn't start with public as we directly are serving public directory  -->
 <link rel="stylesheet" href="/stylesheets/star-heartbeat.css">
+
+
   <div class="row">
     <div class="col-8 ">
       <!-- map -->
@@ -132,3 +134,9 @@
       
   </div>
 </div>
+<script>
+  const mapToken = '<%=process.env.MAPBOX_TOKEN%>';
+</script>
+<!-- ejs wont think that if theres any ejs in there and then my browser requires that script and loads and that code runs   -->
+<!-- passing data from this ejs to this js which then looks for mapTOken which is already defined here -->
+<script src="/scripts/GeoMap.js"></script>
