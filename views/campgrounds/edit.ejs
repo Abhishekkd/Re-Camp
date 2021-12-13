@@ -23,11 +23,12 @@
                     Nicee!
                 </div>
             </div>
-            <div class="mb-3">
+            <!-- was file upload -->
+            <!-- <div class="mb-3">
                 <label class="form-label" for="image">Add Images</label>
-                <input type="file" name="image" id="image" multiple>
+                <input type="file" name="image" id="image" multiple> -->
                 <!-- this name should match to the thing we told multer to look for -->
-            </div>
+            <!-- </div> -->
             <div class="mb-3">
                 <label class="form-label" for="price">Campground Price</label>
                 <div class="input-group">
@@ -45,10 +46,17 @@
                     Nicee!
                 </div>
             </div>
-            
+             <!-- file upload -->
+             <label for="">Add More Images</label>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" name="image" id="image" multiple>
+                <!-- <label class="input-group-text" for="image">Upload</label> -->
+              </div>
+
             <div class="mb-3">
                 <button class="btn btn-success">Update Campground</button>
             </div>
+            
          </form>
         <a href="/campgrounds/<%=campground._id %> ">Back To Campground</a>
         
