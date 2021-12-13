@@ -23,7 +23,6 @@ router.route('/')
         //         res.send("nice");
         //         //array-multiple files stored on req.files
         //         //so multer is just going to parse that form data ,its looking for image here ,and it'll treat that as files
-        //         //and that's what its supposed to be
         
 
 
@@ -38,19 +37,17 @@ router.route('/:id')
         .get(/*,isLoggedIn*/catchAsync(campgrounds.showCampground))
 //to submit our update data of our campground
         .put(
-        isLoggedIn,
-        isAuthor,
+        isLoggedIn,isAuthor,upload.array('image'),
+         //after validations we'll upload an array of multiple images,under the key in the form data of image
         validateCampground,catchAsync(campgrounds.updateCampground))
 //to delete campground
         .delete(
-        isLoggedIn,
-        isAuthor,
+        isLoggedIn,isAuthor,
         catchAsync(campgrounds.deleteCampground));
 
 //serves the update form which will be pre-populated
 router.get("/:id/edit",
-        isLoggedIn,
-        isAuthor,
+        isLoggedIn,isAuthor,
         catchAsync(campgrounds.renderEditForm));
 
 

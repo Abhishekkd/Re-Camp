@@ -30,7 +30,7 @@ module.exports.createCampground = async(req,res,next)=>{
     //to add owner to the currently created campground
        campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
        await campground.save();
-       console.log(campground);
+    //    console.log(campground);
        //after saving data we'll flash the  message and then redirect
        req.flash('success', 'Successfully made a new Campground!!');
        res.redirect(`/campgrounds/${campground._id}`)     
@@ -85,7 +85,11 @@ module.exports.updateCampground = async(req,res)=>{
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains
-    // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds 
+    // our new campground to be updated data i.e title and location under campground and can be found under req.body.campgrounds
+    const imgs = req.files.map(f=>({url:f.path,filename:f.filename}));
+    campground.images.push(...imgs);//imgs is array and we are taking data from that array and pushing it into our existing images array
+    //directly pushing onto campground images would have made array of arrays but we want array of object
+    await campground.save(); 
     //redirecting to our show page of the campground we just updated
     req.flash('success','Successfully updated campground!!')
     res.redirect(`/campgrounds/${campground._id}`)

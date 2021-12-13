@@ -8,7 +8,7 @@
     <div class="col-6 offset-3">
         <!-- post request to submit  new  campground data  -->
     <!-- name-the name with which our data will be send to the servers  -->
-    <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+    <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
         <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
                 <input class="form-control" type="text" id-"title" name="campground[title]" value="<%= campground.title%>" required>
@@ -24,11 +24,9 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="image">Image Url</label>
-                <input  class="form-control" type="text" id-"image" name="campground[image]" value="<%=campground.image%>"  required>
-                <div class="valid-feedback">
-                    Nicee!
-                </div>
+                <label class="form-label" for="image">Add Images</label>
+                <input type="file" name="image" id="image" multiple>
+                <!-- this name should match to the thing we told multer to look for -->
             </div>
             <div class="mb-3">
                 <label class="form-label" for="price">Campground Price</label>
