@@ -21,6 +21,18 @@ const CampgroundSchema = new Schema({
     title:String,
     price:Number,
     images :[ImageSchema],
+    //represents geoJson whose type is point and contains an array of coordinates containing latitude and longitude 
+    geometry: {
+        type: {
+          type: String, // Don't do `{ location: { type: String } }`
+          enum: ['Point'], // 'location.type' must be 'Point'
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
+      },
     description : String,
     location: String,
     //adding owner to a campground sort of associating them

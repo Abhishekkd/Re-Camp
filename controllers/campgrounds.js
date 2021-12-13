@@ -29,23 +29,23 @@ module.exports.createCampground = async(req,res,next)=>{
         query:req.body.campground.location,//as we nested all of our form fields under campground in their name,so location is in it
         limit:1
     }).send()
-    console.log(geoData.body.features[0].geometry.coordinates);
-    res.send('woow')
-// //taking data from req.body.campground and submit & saving that to make our new campground
-//     const campground = new Campground(req.body.campground);
+//taking data from req.body.campground and submit & saving that to make our new campground
+    const campground = new Campground(req.body.campground);
+    //Adding in our geoJson to campgrounds coming from geoCoding Api
+    campground.geometry = geoData.body.features[0].geometry;
+//map over those files and for each one of them and for each one of them we want to take the path or url
+// and the file name and add them into campground
+    campground.images = req.files.map(f=>({url:f.path,filename:f.filename})) //i.e just taking the path and filename o make a new array (4images=4elements)
+//for each element of files map over and return an array containing object of containing path and filename
 
-// //map over those files and for each one of them and for each one of them we want to take the path
-// // and the file name and add them into campground
-//     campground.images = req.files.map(f=>({url:f.path,filename:f.filename})) //i.e just taking the path and filename o make a new array (4images=4elements)
-// //for each element of files map over and return an array containing object of containing path and filename
-
-//     //to add owner to the currently created campground
-//        campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
-//        await campground.save();
-//     //    console.log(campground);
-//        //after saving data we'll flash the  message and then redirect
-//        req.flash('success', 'Successfully made a new Campground!!');
-//        res.redirect(`/campgrounds/${campground._id}`)     
+    //to add owner to the currently created campground
+    //setting author to be currently logged in author
+       campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
+       await campground.save();
+       console.log(campground);
+       //after saving data we'll flash the  message and then redirect
+       req.flash('success', 'Successfully made a new Campground!!');
+       res.redirect(`/campgrounds/${campground._id}`)     
    }
 
 
