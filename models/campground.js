@@ -30,6 +30,8 @@ const CampgroundSchema = new Schema({
         }
     ]
 });
+
+
 //mongoose query middleware for deleting reviews along with their corresponding campground
 //post that is this will run after its been deleted
 CampgroundSchema.post('findOneAndDelete', async(doc)=>{

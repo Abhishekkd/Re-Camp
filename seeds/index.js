@@ -49,9 +49,17 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
             location:`${cities[random1000].city}, ${cities[random1000].state}`,
             //this should give combination of our two array in seedHelpers.js
             title : `${sample(descriptors)} ${sample(places)}`,
-            image: 'https://source.unsplash.com/collection/483251',
             description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, quaerat voluptates accusamus ea aut praesentium consequuntur corrupti nobis eligendi doloremque, ullam assumenda excepturi numquam reprehenderit quia minima, maxime architecto inventore!'
-            ,price
+            ,price,images: [
+                {
+                  url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639329881/ReCamp/erdufhktj5ingkv8xdqy.png',
+                  filename: 'ReCamp/erdufhktj5ingkv8xdqy',
+                },
+                {
+                  url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639329881/ReCamp/bvcrj58rqaz1czgbfkwz.jpg',
+                  filename: 'ReCamp/bvcrj58rqaz1czgbfkwz',
+                }
+              ]
             //so we used shorthand i.e we dint price:price
         }) 
         await camp.save();
