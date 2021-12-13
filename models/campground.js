@@ -3,16 +3,36 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Review = require('./review');
 
-//our schema
+//our schemas
+
+//nesting schema so that we can use virtual property on it
+const ImageSchema = new Schema({
+    //every image has a url and filename as a string
+    url:String,
+    filename:String
+})
+//on every image i wanna setup a thumbnail(a property on each individual element of images array)
+ImageSchema.virtual('thumbnail').get(function(){
+    //this is referring to a particular image
+    return this.url.replace('/upload','/upload/w_200'); //taking the url and adding parameters to it as required by cloudinary api to work
+ //replacing contents of api(url) where we are gonna make our request to ge thumbnail
+})
 const CampgroundSchema = new Schema({
     title:String,
     price:Number,
-    images :[ //can store multiple images
-        {//each document now has a url and a filename
-            url: String,
-            filename:String
+    images :[ImageSchema],
+    //represents geoJson whose type is point and contains an array of coordinates containing latitude and longitude 
+    geometry: {
+        type: {
+          type: String, // Don't do `{ location: { type: String } }`
+          enum: ['Point'], // 'location.type' must be 'Point'
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
         }
-    ],
+      },
     description : String,
     location: String,
     //adding owner to a campground sort of associating them
