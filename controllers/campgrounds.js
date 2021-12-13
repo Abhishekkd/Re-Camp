@@ -82,6 +82,7 @@ module.exports.renderEditForm = async (req,res,next)=>{
 //to submit our update data of our campground
 module.exports.updateCampground = async(req,res)=>{
     const {id} = req.params;
+    console.log(req.body);
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains

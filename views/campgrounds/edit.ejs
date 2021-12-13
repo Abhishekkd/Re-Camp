@@ -52,7 +52,19 @@
                 <input type="file" class="form-control" name="image" id="image" multiple>
                 <!-- <label class="input-group-text" for="image">Upload</label> -->
               </div>
-
+              <!-- delete images form -->
+              <div class="mb-3">
+                     <% campground.images.forEach((img,i) =>{ %> <!-- image i.e first element and the index of each element -->
+                     <!-- rendering an image for each element of images array and they are each individual images -->
+                        <img src="<%=img.url%>" class="img-thumbnail" alt="">
+                        <div class="form-check-inline">
+                            <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>">
+                            <!-- value is what we'll use to delete the image from server side i.e using filename to actually delete file from cloudinary -->
+                        </div>
+                        <!-- for and is used to associate a particular image  label with checkbox -->
+                        <label for="image-<%=i%>">??Delete</label>
+                    <% })  %>  
+              </div>
             <div class="mb-3">
                 <button class="btn btn-success">Update Campground</button>
             </div>

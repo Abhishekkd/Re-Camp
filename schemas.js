@@ -20,7 +20,8 @@ const Joi=require('joi');
             // image:Joi.string().required(),
             location:Joi.string().required(),
             description:Joi.string().required()
-        }).required()
+        }).required(),
+        deleteImages:Joi.array()
     })
 
 //review validations for before submitting it to our db
