@@ -1,7 +1,7 @@
 //our show campground logic
 const Campground= require("../models/campground");
-
-
+//requiring cloudinary that we are exporting from cloudinary
+const {cloudinary} = require("../cloudinary");
 
 module.exports.index = async(req,res)=>{
     // making a new campground based upon our Campground model
@@ -82,7 +82,7 @@ module.exports.renderEditForm = async (req,res,next)=>{
 //to submit our update data of our campground
 module.exports.updateCampground = async(req,res)=>{
     const {id} = req.params;
-    console.log(req.body);
+    // console.log(req.body);
     //1st arg toFind and 2nd arg data to update with i.e title,price,location,etc
     const campground = await Campground.findByIdAndUpdate(id,{...req.body.campground});//here spreading out campground object 
     //into this 2nd argument object which contains
@@ -90,7 +90,19 @@ module.exports.updateCampground = async(req,res)=>{
     const imgs = req.files.map(f=>({url:f.path,filename:f.filename}));
     campground.images.push(...imgs);//imgs is array and we are taking data from that array and pushing it into our existing images array
     //directly pushing onto campground images would have made array of arrays but we want array of object
-    await campground.save(); 
+    await campground.save();
+    //if there are any images to delete
+    if(req.body.deleteImages){
+        for(let filename of req.body.deleteImages){
+            //for each filename inside of deleteImages Array well delete from cloudinary
+            await cloudinary.uploader.destroy(filename);
+        }
+    //deleting images from the campground array that matches the data coming from deleteImages array containing filename and we'll
+    //delete the images that matches that filename from in campground images array
+    await campground.updateOne({$pull:{images:{filename:{$in:req.body.deleteImages}}}});
+    //$ pull operator to pull elements(images) out of an array where the filename in each in each array matches to that filename in deleteImages array
+    }
+   
     //redirecting to our show page of the campground we just updated
     req.flash('success','Successfully updated campground!!')
     res.redirect(`/campgrounds/${campground._id}`)

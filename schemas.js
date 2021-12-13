@@ -21,6 +21,9 @@ const Joi=require('joi');
             location:Joi.string().required(),
             description:Joi.string().required()
         }).required(),
+        //its not required when validating and
+        // its an array so when we edit/delete images from existing campground we wont be getting error "deleteImages not allowed"
+        //deleteImages is an array containing things we checked on checkbox while deleting existing  images from campground
         deleteImages:Joi.array()
     })
 
