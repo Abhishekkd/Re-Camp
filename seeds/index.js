@@ -1,3 +1,4 @@
+//when reseeding campground we aren't deleting users but only campground stuff
 //in here we are going to write our actual seed logic
 //im going to make this file self contained so its going to connect to mongoose and its gong to use my model
 //so were going to run this file on its own separately from our node at any time we need to seed out database
@@ -45,20 +46,27 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
         const price = Math.floor(Math.random()*20)+10;
         const camp = new Campground({
             //setting all the campgrounds to have author of that id
+            //i.e my author id i.e default (chicken:nugget)
             author: "61b0df450ce3370ba40f56f6",
             location:`${cities[random1000].city}, ${cities[random1000].state}`,
             //this should give combination of our two array in seedHelpers.js
             title : `${sample(descriptors)} ${sample(places)}`,
             description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, quaerat voluptates accusamus ea aut praesentium consequuntur corrupti nobis eligendi doloremque, ullam assumenda excepturi numquam reprehenderit quia minima, maxime architecto inventore!'
-            ,price,images: [
+            ,price,
+            geometry :
+             { "type" : "Point",
+              "coordinates" : [ 135.52, 34.68639 ]
+            }, 
+            images: [
+                 {
+                  url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639329881/ReCamp/bvcrj58rqaz1czgbfkwz.jpg',
+                  filename: 'ReCamp/bvcrj58rqaz1czgbfkwz',
+                },
                 {
                   url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639329881/ReCamp/erdufhktj5ingkv8xdqy.png',
                   filename: 'ReCamp/erdufhktj5ingkv8xdqy',
-                },
-                {
-                  url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639329881/ReCamp/bvcrj58rqaz1czgbfkwz.jpg',
-                  filename: 'ReCamp/bvcrj58rqaz1czgbfkwz',
                 }
+               
               ]
             //so we used shorthand i.e we dint price:price
         }) 
