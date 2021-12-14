@@ -11,6 +11,13 @@
   zoom: 9 // starting zoom
   });
  //marker
- new mapboxgl.Marker()
- .setLngLat(campground.geometry.coordinates)
+ new mapboxgl.Marker() //our marker
+ //calling methods now on this marker
+ .setLngLat(campground.geometry.coordinates)//setting the latitude and longitude so thats where the data going 
+ .setPopup(
+   new mapboxgl.Popup({offset:25})
+    .setHTML(
+     `<h3>${campground.title}</h3><p>${campground.location}</p>`
+   )
+ )
  .addTo(map);

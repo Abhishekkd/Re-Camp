@@ -47,7 +47,7 @@ module.exports.createCampground = async(req,res,next)=>{
     //setting author to be currently logged in author
        campground.author = req.user._id; //so taking th user id and saving it as an author on this newly made campground 
        await campground.save();
-       console.log(campground);
+    //    console.log(campground);
        //after saving data we'll flash the  message and then redirect
        req.flash('success', 'Successfully made a new Campground!!');
        res.redirect(`/campgrounds/${campground._id}`)     
