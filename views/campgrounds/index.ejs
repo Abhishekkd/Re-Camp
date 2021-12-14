@@ -39,5 +39,8 @@
   ,they'll already have access to them and the'd use them to display content -->
 <script>
   const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+  //passing through our all campgrounds so using its data we,ll display cluster map using mapbox and conforming to the pattern 
+  //which map box requires to display map
+  const campgrounds = {features: <%- JSON.stringify(campgrounds) %>}
 </script>  
 <script src="/scripts/geoCluster.js"></script>

@@ -6,6 +6,7 @@ center: [-103.5917, 40.6699],
 zoom: 3
 });
  
+//map.on something are the events wea re going to listen for
 map.on('load', () => {
 // Add a new source from our GeoJSON data and
 // set the 'cluster' option to true. GL-JS will
@@ -14,7 +15,7 @@ map.addSource('earthquakes', {
 type: 'geojson',
 // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
 // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
+data: campgrounds,//this campgrounds defined in index.ejs and passed here
 cluster: true,
 clusterMaxZoom: 14, // Max zoom to cluster points on
 clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
@@ -100,8 +101,8 @@ zoom: zoom
 // the unclustered-point layer, open a popup at
 // the location of the feature, with
 // description HTML from its properties.
-map.on('click', 'unclustered-point', (e) => {
-const coordinates = e.features[0].geometry.coordinates.slice();
+map.on('click', 'unclustered-point', (e) => { //this function is called when we click on a unclustered point
+const coordinates = e.features[0].geometry.coordinates.slice();//(this function is here to get some data out)
 const mag = e.features[0].properties.mag;
 const tsunami =
 e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
@@ -120,7 +121,7 @@ new mapboxgl.Popup()
 )
 .addTo(map);
 });
- 
+ //when mouse enters over clusters
 map.on('mouseenter', 'clusters', () => {
 map.getCanvas().style.cursor = 'pointer';
 });
