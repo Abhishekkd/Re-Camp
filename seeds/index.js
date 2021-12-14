@@ -40,7 +40,7 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
 //     await c.save();
 
 //in here we are going to pick a random number use that to pick a city
-    for(let i= 0;i<50;i++){
+    for(let i= 0;i<350;i++){
         const random1000 = Math.floor(Math.random() * 1000);
         //making new campground each loop through then saving it in a variable thereafter which  to our database
         const price = Math.floor(Math.random()*20)+10;

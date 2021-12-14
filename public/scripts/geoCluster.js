@@ -37,20 +37,20 @@ paint: {
 'step',
 ['get', 'point_count'],
 '#B91646',
-100,
-'#f1f075',
-750,
-'#f28cb1'
+10,
+'#C72C41',
+35,
+'#88304E'
  //these controls the size and the shape of the circle depending upon the no of points in it so the number of things in a given cluster
 ],  
 'circle-radius': [
 'step',
 ['get', 'point_count'],
+15,
+10,
 20,
-100,
-30,
-750,
-40
+35,
+30
 ]
 }
 });
