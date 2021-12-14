@@ -134,9 +134,15 @@
       
   </div>
 </div>
+<!-- passing variables so that when this scripts loads in the browser(client-side)
+  ,they'll already have access to them and the'd use them to display content -->
 <script>
-  const mapToken = '<%=process.env.MAPBOX_TOKEN%>';
+  const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+  //json.stringify converts data into json
+  //in here now we have access to the entire campground geometry(coordinates) included
+  const campground =  <%-JSON.stringify(campground)%>;
+  
 </script>
 <!-- ejs wont think that if theres any ejs in there and then my browser requires that script and loads and that code runs   -->
 <!-- passing data from this ejs to this js which then looks for mapTOken which is already defined here -->
-<script src="/scripts/GeoMap.js"></script>
+<script src="/scripts/geoMap.js"></script>

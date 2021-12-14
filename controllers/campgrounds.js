@@ -2,7 +2,7 @@
 const Campground= require("../models/campground");
 //requiring cloudinary that we are exporting from cloudinary
 const {cloudinary} = require("../cloudinary");
-//importing what wwe need from mapBox
+//importing what we need from mapBox
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 // passing our token
 const mapBoxToken = process.env.MAPBOX_TOKEN;
@@ -31,6 +31,11 @@ module.exports.createCampground = async(req,res,next)=>{
     }).send()
 //taking data from req.body.campground and submit & saving that to make our new campground
     const campground = new Campground(req.body.campground);
+    // //if wrong location is given i.e geometry undefined
+    // if(!geoData.body.features[0].geometry){
+    //     req.flash('error',"NO! Such location is there!!")
+
+    // }
     //Adding in our geoJson to campgrounds coming from geoCoding Api
     campground.geometry = geoData.body.features[0].geometry;
 //map over those files and for each one of them and for each one of them we want to take the path or url
