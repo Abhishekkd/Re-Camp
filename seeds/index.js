@@ -48,6 +48,8 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
             //setting all the campgrounds to have author of that id
             //i.e my author id i.e default (chicken:nugget)
             author: "61b0df450ce3370ba40f56f6",
+            //city[random1000]->this refers to city being an array from cities.js and we are accessing
+            // its elements(an object) using random1000 function on which we are accessing its city property
             location:`${cities[random1000].city}, ${cities[random1000].state}`,
             //this should give combination of our two array in seedHelpers.js
             title : `${sample(descriptors)} ${sample(places)}`,
@@ -55,7 +57,11 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
             ,price,
             geometry :
              { "type" : "Point",
-              "coordinates" : [ 135.52, 34.68639 ]
+              "coordinates" : [ 
+                //taking random coordinates from this massive array we required
+                cities[random1000].longitude,
+                cities[random1000].latitude,
+               ]
             }, 
             images: [
                  {

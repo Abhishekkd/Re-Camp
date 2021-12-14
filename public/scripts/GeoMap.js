@@ -9,9 +9,11 @@
   style: 'mapbox://styles/mapbox/streets-v11', // style URL
   center: campground.geometry.coordinates, // starting position [lng, lat]
   zoom: 9 // starting zoom
+  
   });
  //marker
  new mapboxgl.Marker() //our marker
+ 
  //calling methods now on this marker
  .setLngLat(campground.geometry.coordinates)//setting the latitude and longitude so thats where the data going 
  .setPopup(
