@@ -1,6 +1,56 @@
 <!-- we'll be injecting this templates content to our boilerplate -->
 <!-- this function is from ejs-mate -->
 <!-- so this function is looking for everything in this template to pass that through as body to our boilerplate -->
+<!-- we aren't gonna use layout cause our layout has things that we don't need like mapbox-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re:Camp</title>
+     <!-- bootstrap-to load css -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+     <link rel="stylesheet" href="/stylesheets/home.css">
+</head>
+<body class="d-flex text-center text-white bg-dark">
+ <!-- made body a flexbox,100% height,text white and in center with dark background    -->
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<!-- inside of this div a header(not a full navbar) -->
+        <header class="mb-auto">
+            <div>
+                <h3 class="float-md-start mb-0">Re:Camp</h3>
+                <!-- so re:camp starts from top start -->
+                    <nav class="nav nav-masthead justify-content-center float-md-end">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link" href="/campgrounds">Campgrounds</a>
+                        <% if(!currentUser){ %>
+                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/register">Register</a>
+                         <% } else { %> 
+                        <a class="nav-link" href="/logout">Logout</a>
+                        <% } %> 
+                    </nav>
 
-<% layout('layouts/boilerplate') %> 
-    <h1>ReCamp Home!</h1>
+            </div>
+        </header>
+        <main class="px-3">
+            <!-- padding x is 3 i.e left and right -->
+            <h1>Re:Camp</h1>
+            <p class="lead">
+                <!-- lead for our leaf text because we'll but something meaningful in here/ -->
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium corrupti sit ratione incidunt necessitatibus unde quos molestia
+                e vel iste maiores, voluptates quasi voluptatum! At voluptatibus neque nesciunt reiciendis animi voluptates?
+            </p>
+            <a href="/campgrounds" class=" btn btn-large btn-secondary font-weight-bold text-white-50 bg-white">Get Started</a>
+        </main>
+        <footer class="mt-auto text-white-50">
+            <p>&copy; Re:Camp 2021</p>
+        </footer>
+</div>
+   <!-- bootstrap popper.js -->
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+   <!-- bootstrap js file,much needed if u plan on doing anything involving a navbar,popups,models -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>  
+</body>
+</html>

@@ -1,0 +1,8 @@
+body {
+  height: 100vh;
+}
+/* giving 100 view height to body instead of 100% with bootstrap using class h-100 */
+.cover-container {
+  max-width: 90vw;
+}
+/* view width */
