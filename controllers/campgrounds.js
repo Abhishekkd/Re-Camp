@@ -34,8 +34,7 @@ module.exports.createCampground = async(req,res,next)=>{
     //if wrong location is given i.e geometry undefined
     if(!geoData.body.features[0].geometry){
         req.flash('error',"NO! Such location is there!!")
-
-    }
+}
     //Adding in our geoJson to campgrounds coming from geoCoding Api
     campground.geometry = geoData.body.features[0].geometry;
 //map over those files and for each one of them and for each one of them we want to take the path or url

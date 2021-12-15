@@ -11,12 +11,14 @@ const ImageSchema = new Schema({
     url:String,
     filename:String
 })
-//on every image i wanna setup a thumbnail(a property on each individual element of images array)
+//defining a virtual on every image i wanna setup a thumbnail(a property on each individual element of images array)
 ImageSchema.virtual('thumbnail').get(function(){
     //this is referring to a particular image
     return this.url.replace('/upload','/upload/w_200'); //taking the url and adding parameters to it as required by cloudinary api to work
  //replacing contents of api(url) where we are gonna make our request to ge thumbnail
-})
+});
+//so the virtuals will work after we convert a document to json 
+const opts = {toJSON:{virtuals:true}};
 const CampgroundSchema = new Schema({
     title:String,
     price:Number,
@@ -49,8 +51,14 @@ const CampgroundSchema = new Schema({
             ref: 'Review'
         }
     ]
-});
+},opts);//passing this to our schema
 
+//registering or defining  a virtual for our campground in a particular format as required by mapbox in order for have popups display our data
+//to use this we need to access it using campground.properties.popMarkup
+CampgroundSchema.virtual('properties.popUpMarkUp').get(function(){//nesting property inside a property
+    return `<strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+    <p>$${this.price}/night<br>${this.description.substring(0,20)}..</p>`
+})//this refers to particular campground instance //substring of only first 20 characters
 
 //mongoose query middleware for deleting reviews along with their corresponding campground
 //post that is this will run after its been deleted
