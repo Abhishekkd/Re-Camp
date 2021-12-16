@@ -4,8 +4,12 @@
 <% layout('layouts/boilerplate') %> 
     
  <div class="row">
-    <h1 class="text-center">New Campground</h1>
-    <div class="col-8 offset-2">
+  
+   
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow"> 
+            <div class="card-body">
+                  <h1 class="text-center">New Campground</h1>
         <!-- post request to submit  new  campground data  -->
     <!-- name-the name with which our data will be send to the servers  -->
         <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
@@ -60,7 +64,8 @@
             </div>
          </form>
         <a href="/campgrounds">Back To Campgrounds</a>
-        
+    </div>  
+</div>
     </div>
 </div>
 
