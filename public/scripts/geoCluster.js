@@ -7,6 +7,9 @@ style: 'mapbox://styles/mapbox/dark-v10',
 center: [-103.5917, 40.6699],
 zoom: 3
 });
+//to add map controls i.e adding zoom and rotation controls to the map
+map.addControl(new mapboxgl.NavigationControl());
+
 //  console.log(campgrounds);
 //map.on something are the events wea re going to listen for
 map.on('load', () => {

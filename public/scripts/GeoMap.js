@@ -11,6 +11,9 @@
   zoom: 9 // starting zoom
   
   });
+  //to add map controls i.e adding zoom and rotation controls to the map
+map.addControl(new mapboxgl.NavigationControl());
+
  //marker
  new mapboxgl.Marker() //our marker
  
