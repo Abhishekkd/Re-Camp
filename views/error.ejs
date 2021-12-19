@@ -7,8 +7,10 @@
     <div class="col-6 offset-3">
         <div class="alert alert-danger" role="alert">
     <h4 class="alert-heading"><%=err.message %> </h4>
-   
+    <!-- if our app is still in development phases only then we wanna show this -->
+   <%if(process.env.NODE_ENV !== "production"){%> 
     <p><%=err.stack %> </p>
+    <%}%>
   </div>
     </div>
 </div>

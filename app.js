@@ -76,6 +76,9 @@ app.use(mongoSanitize());
 //for sessions
 // adding in some configuring object that doesn't exist yet
 const sessionConfig={
+    //default name of our session (or cookie) is connect.sid and we're changing that
+    //change it to something less obvious which makes it seem less of a cookie,so hecker can't extract from user and use it
+    name:'brownieId',
     secret: 'thisShouldBeAnActualSecretInProduction',
     //setting some options for session otherwise we'll get deprecation error
     resave : false,
@@ -85,8 +88,13 @@ const sessionConfig={
       //week for it to expire
     expires:Date.now() + 1000*60*60*24*7,
     maxAge:1000*60*60*24*7,
-    //juz extra security
-    httpOnly:true,  
+    //juz extra security added on sessionConfig object
+    //this basically says that our cookies at least the one set through the sessions,are only accessible over Http
+    //, they're not accessible through js
+    httpOnly:true,
+    //this means this should only work over https (s for secure) and localhost isn't https i.e its not secure so its gonna break things
+    //so that our site or rather our cookies can only be configured or changed over secure connection (https)
+    //? secure:true
     }
     
 }
