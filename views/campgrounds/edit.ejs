@@ -6,21 +6,21 @@
  <div class="row">
    
     <div class="col-md-8 offset-md-2">
-        <div class="card shadow">
+        <div class="card shadow bg-dark">
             <div class="card-body"> 
-                <h1 class="text-center">Edit Campground</h1>
+                <h1 class="text-center text-white">Edit Campground</h1>
         <!-- post request to submit  new  campground data  -->
     <!-- name-the name with which our data will be send to the servers  -->
     <form action="/campgrounds/<%=campground._id%>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
         <div class="mb-3">
-                <label class="form-label" for="title">Title</label>
+                <label class="form-label text-white" for="title">Title</label>
                 <input class="form-control" type="text" id-"title" name="campground[title]" value="<%= campground.title%>" required>
                 <div class="valid-feedback">
                     Nicee!
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="location">Location</label>
+                <label class="form-label text-white" for="location">Location</label>
                 <input  class="form-control" type="text" id-"location" name="campground[location]" value="<%=campground.location%>"  required>
                 <div class="valid-feedback">
                     Nicee!
@@ -33,7 +33,7 @@
                 <!-- this name should match to the thing we told multer to look for -->
             <!-- </div> -->
             <div class="mb-3">
-                <label class="form-label" for="price">Campground Price</label>
+                <label class="form-label text-white" for="price">Campground Price</label>
                 <div class="input-group">
                     <span class="input-group-text" id="price-label">$</span>
                     <input type="text" class="form-control" id="price" placeholder="0.00" name="campground[price]"  value="<%=campground.price%>" aria-label="price" aria-describedby="price-label"  required>
@@ -43,14 +43,14 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="description">Description</label>
+                <label class="form-label text-white" for="description">Description</label>
                 <textarea  class="form-control" type="text" id-"description" name="campground[description]"  required><%=campground.description  %> </textarea>
                 <div class="valid-feedback">
                     Nicee!
                 </div>
             </div>
              <!-- file upload -->
-             <label for="">Add More Images</label>
+             <label class="text-white" for="">Add More Images</label>
             <div class="input-group mb-3">
                 <input type="file" class="form-control" name="image" id="image" multiple>
                 <!-- <label class="input-group-text" for="image">Upload</label> -->
