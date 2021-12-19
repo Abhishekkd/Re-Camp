@@ -81,12 +81,14 @@ const sessionConfig={
     resave : false,
     saveUninitialized: true,
     // later on our data store will be mongo,currently its just memory (it juz goes away)
-
-    //week for it to expire
+    cookie:{
+      //week for it to expire
     expires:Date.now() + 1000*60*60*24*7,
     maxAge:1000*60*60*24*7,
     //juz extra security
-    httpOnly:true,
+    httpOnly:true,  
+    }
+    
 }
 //using session 
 app.use(session(sessionConfig));
@@ -115,7 +117,7 @@ passport.deserializeUser(User.deserializeUser());
 //middleware for our flash
 //we have access to this on every single template as these are global things
 app.use((req,res,next)=>{
-    console.log(req.query);
+    // console.log(req.query);
     //so whatever is in there i.e message for now
     //so on every single request whatever  is in this flash under success
     // we'll have access to it under the locals in the key success
