@@ -10,6 +10,7 @@
  const ejsMate =require('ejs-mate');
  const session =require('express-session');
  const flash = require('connect-flash');
+ const mongoSanitize = require('express-mongo-sanitize');
   //we're destructuring this schema here as we'll be having multiple schemas here
  const {campgroundSchema,reviewSchema}=require('./schemas.js');
 //  const catchAsync=require('./utils/catchAsync');
@@ -24,6 +25,7 @@
  const campgroundRoutes = require('./routes/campgrounds')
  const reviewRoutes = require('./routes/reviews');
  const userRoutes = require('./routes/users');
+
 // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
 //     .then(()=> {
@@ -68,6 +70,8 @@ app.use(methodOverride('_method'));
 //joining our current working direct absolute path with public directory
 //so we can run our file from inside of that directory too
 app.use(express.static(path.join(__dirname,'public')));
+//middleware for our sanitizer
+app.use(mongoSanitize());
 
 //for sessions
 // adding in some configuring object that doesn't exist yet
@@ -111,6 +115,7 @@ passport.deserializeUser(User.deserializeUser());
 //middleware for our flash
 //we have access to this on every single template as these are global things
 app.use((req,res,next)=>{
+    console.log(req.query);
     //so whatever is in there i.e message for now
     //so on every single request whatever  is in this flash under success
     // we'll have access to it under the locals in the key success
@@ -130,12 +135,12 @@ app.get('/',(req,res)=>{
 
 //?fake user registration
 
-app.get('/secret',async(req,res)=>{
-    const user = new User({email: 'deepend@gmail.com',username:'nugget'});
-    const newUser = await User.register(user,'chicken');//providing a user object(instance of our model) and then password
-    //then it takes care of hashing and salting and all that
-    res.send(newUser);
-})
+// app.get('/secret',async(req,res)=>{
+//     const user = new User({email: 'deepend@gmail.com',username:'nugget'});
+//     const newUser = await User.register(user,'chicken');//providing a user object(instance of our model) and then password
+//     //then it takes care of hashing and salting and all that
+//     res.send(newUser);
+// })
 
 
 //specify the router we wanna use which is our campgrounds that we required
