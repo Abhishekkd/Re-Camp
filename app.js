@@ -28,6 +28,8 @@
  const reviewRoutes = require('./routes/reviews');
  const userRoutes = require('./routes/users');
 
+//  const dbUrl = process.env.DB_URL;
+
 // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
 //     .then(()=> {
