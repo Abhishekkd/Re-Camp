@@ -8,7 +8,11 @@
  const mongoose = require('mongoose');
  const path = require('path');
  const ejsMate =require('ejs-mate');
+
  const session =require('express-session');
+ //require it and then later downwards we'll make its instance
+ const MongoDBStore = require('connect-mongo');
+ 
  const flash = require('connect-flash');
  const mongoSanitize = require('express-mongo-sanitize');
   //we're destructuring this schema here as we'll be having multiple schemas here
@@ -27,6 +31,7 @@
  const campgroundRoutes = require('./routes/campgrounds')
  const reviewRoutes = require('./routes/reviews');
  const userRoutes = require('./routes/users');
+const { dangerouslyDisableDefaultSrc } = require('helmet/dist/middlewares/content-security-policy');
 
 //  const dbUrl = process.env.DB_URL;
 
@@ -79,9 +84,23 @@ app.use(mongoSanitize({
     replaceWith:'_' //to replace characters with underscore after sanitizing
 }));
 
-//for sessions
+//configuring sessions to be stored on mongodb
+const store= MongoDBStore.create({
+    mongoUrl:'mongodb://localhost:27017/re-camp',
+  crypto:{
+      secret: 'thisShouldBeAnActualSecretInProduction'
+    },
+//so data will be updated when necessary and not continuous savings and if the data is same then it wont be updated 
+    touchAfter:24*60*60
+});
+store.on("error",function(e){
+    console.log("Session Store Error",e)
+});
+
+//for sessions to be stored locally using passport
 // adding in some configuring object that doesn't exist yet
 const sessionConfig={
+    store,
     //default name of our session (or cookie) is connect.sid and we're changing that
     //change it to something less obvious which makes it seem less of a cookie,so hecker can't extract from user and use it
     name:'session',
@@ -104,7 +123,8 @@ const sessionConfig={
     }
     
 }
-//using session 
+
+
 app.use(session(sessionConfig));
 app.use(flash());
 app.use(helmet());//this enables us to use all 11 helmet middleware's
