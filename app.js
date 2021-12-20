@@ -21,6 +21,8 @@
  const passport=require('passport');
  const LocalStrategy = require('passport-local');
  const User = require('./models/user')
+ //helmet for security
+ const helmet = require('helmet');
 
  const campgroundRoutes = require('./routes/campgrounds')
  const reviewRoutes = require('./routes/reviews');
@@ -71,14 +73,16 @@ app.use(methodOverride('_method'));
 //so we can run our file from inside of that directory too
 app.use(express.static(path.join(__dirname,'public')));
 //middleware for our sanitizer
-app.use(mongoSanitize());
+app.use(mongoSanitize({
+    replaceWith:'_' //to replace characters with underscore after sanitizing
+}));
 
 //for sessions
 // adding in some configuring object that doesn't exist yet
 const sessionConfig={
     //default name of our session (or cookie) is connect.sid and we're changing that
     //change it to something less obvious which makes it seem less of a cookie,so hecker can't extract from user and use it
-    name:'brownieId',
+    name:'session',
     secret: 'thisShouldBeAnActualSecretInProduction',
     //setting some options for session otherwise we'll get deprecation error
     resave : false,
@@ -101,6 +105,54 @@ const sessionConfig={
 //using session 
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(helmet());//this enables us to use all 11 helmet middleware's
+//src that we allowed to load data from {sources we are allowing for content security policy}
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+    "https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js",
+     "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js",
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+     "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/doyl9cutp/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
 
 //passport thingy's
 
@@ -109,7 +161,7 @@ app.use(passport.initialize());
 //do when u are using api's but not as a user with  an  actual interface 
 app.use(passport.session());
 //passing in our user model
-//this is saying that passport use the localStrategy that we have required or we can also use som other strategy
+//this is saying that passport use the localStrategy that we have required or we can also use some other strategy
 // and for that localStrategy the authenticate method(by passport) on user model
 //static method added in automatically like authenticate() on our model by passport-local-mongoose
 passport.use(new LocalStrategy(User.authenticate())) //specifying authentication method
@@ -179,4 +231,4 @@ app.use((err,req,res,next)=>{
 
  app.listen(3000,()=>{
      console.log("Listening on 3000")
- })
+ }) 
