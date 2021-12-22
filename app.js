@@ -1,6 +1,6 @@
  //not in production i.e currently we are in development phase
  if(process.env.NODE_ENV !== "production"){
-     require('dotenv').config();
+     require('dotenv').config();//requiring configured environment variables
  }
 //  console.log(process.env.SECRET);
 
@@ -12,7 +12,7 @@
  const session =require('express-session');
  //require it and then later downwards we'll make its instance
  const MongoDBStore = require('connect-mongo');
- 
+
  const flash = require('connect-flash');
  const mongoSanitize = require('express-mongo-sanitize');
   //we're destructuring this schema here as we'll be having multiple schemas here
@@ -31,10 +31,11 @@
  const campgroundRoutes = require('./routes/campgrounds')
  const reviewRoutes = require('./routes/reviews');
  const userRoutes = require('./routes/users');
-const { dangerouslyDisableDefaultSrc } = require('helmet/dist/middlewares/content-security-policy');
+ const { dangerouslyDisableDefaultSrc } = require('helmet/dist/middlewares/content-security-policy');
+ const { func } = require('joi');
 
-//  const dbUrl = process.env.DB_URL;
-
+ const dbUrl = process.env.DB_URL||'mongodb://localhost:27017/re-camp';//this will be like a backup
+ const secret = process.env.SECRET || 'thisShouldBeAnActualSecretInProduction';
 // database is named farmStand where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
 //     .then(()=> {
@@ -45,12 +46,12 @@ const { dangerouslyDisableDefaultSrc } = require('helmet/dist/middlewares/conten
 //         console.log(err);
 //     })
 //connecting to database
-mongoose.connect('mongodb://localhost:27017/re-camp',{
+mongoose.connect(dbUrl,{
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     // useFindAndModify:false,
     // useCreateIndex:true
-});
+});                      
 
  const db = mongoose.connection;
  db.on("error", console.error.bind(console,"connection error:"));
@@ -84,11 +85,11 @@ app.use(mongoSanitize({
     replaceWith:'_' //to replace characters with underscore after sanitizing
 }));
 
-//configuring sessions to be stored on mongodb
+//configuring sessions to be stored in mongodb (mongoStore for the session)
 const store= MongoDBStore.create({
-    mongoUrl:'mongodb://localhost:27017/re-camp',
+    mongoUrl:dbUrl,
   crypto:{
-      secret: 'thisShouldBeAnActualSecretInProduction'
+      secret
     },
 //so data will be updated when necessary and not continuous savings and if the data is same then it wont be updated 
     touchAfter:24*60*60
@@ -96,7 +97,6 @@ const store= MongoDBStore.create({
 store.on("error",function(e){
     console.log("Session Store Error",e)
 });
-
 //for sessions to be stored locally using passport
 // adding in some configuring object that doesn't exist yet
 const sessionConfig={
@@ -104,7 +104,7 @@ const sessionConfig={
     //default name of our session (or cookie) is connect.sid and we're changing that
     //change it to something less obvious which makes it seem less of a cookie,so hecker can't extract from user and use it
     name:'session',
-    secret: 'thisShouldBeAnActualSecretInProduction',
+    secret,
     //setting some options for session otherwise we'll get deprecation error
     resave : false,
     saveUninitialized: true,
@@ -123,8 +123,7 @@ const sessionConfig={
     }
     
 }
-
-
+//telling our app to use these things
 app.use(session(sessionConfig));
 app.use(flash());
 app.use(helmet());//this enables us to use all 11 helmet middleware's
@@ -252,5 +251,5 @@ app.use((err,req,res,next)=>{
 })
 
  app.listen(3000,()=>{
-     console.log("Listening on 3000")
+     console.log("Listening on 3001")
  }) 
