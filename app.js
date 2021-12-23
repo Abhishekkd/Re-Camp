@@ -249,7 +249,9 @@ app.use((err,req,res,next)=>{
     //  and it wont update the message we are passing through to our template-only  applicable when theres no message) 
     res.status(statusCode).render('error',{ err });
 })
-
- app.listen(3000,()=>{
-     console.log("Listening on 3001")
+//specified port for heroku
+const port = process.env.PORT || 3000 //that will be present automatically on heroku (port variable)
+// and set to something and if we are in development phase i.e localhost just default to 3000
+ app.listen(port,()=>{
+     console.log(`Listening on ${port}` )
  }) 

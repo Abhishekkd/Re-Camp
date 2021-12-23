@@ -7,8 +7,8 @@ const mongoose = require('mongoose');
  const Campground= require("../models/campground")
  const cities = require("./cities")
  const {places,descriptors} = require('./seedHelpers')
-//   require('dotenv').config();
-// const dbUrl = process.env.DB_URL||'mongodb://localhost:27017/re-camp';
+  require('dotenv').config();
+const dbUrl = process.env.DB_URL||'mongodb://localhost:27017/re-camp';
 // // database is named re-camp where our collections will be stored and will be created for us
 // mongoose.connect('mongodb://localhost:27017/re-camp', { useNewUrlParser: true, useUnifiedTopology: true })
 //     .then(()=> {
@@ -19,7 +19,7 @@ const mongoose = require('mongoose');
 //         console.log(err);
 //     })
 
-mongoose.connect('mongodb://localhost:27017/re-camp',{
+mongoose.connect(dUrl,{
     useNewUrlParser: true, 
     useUnifiedTopology: true
 });
@@ -75,7 +75,7 @@ mongoose.connect('mongodb://localhost:27017/re-camp',{
                 }
                
               ]
-            //so we used shorthand i.e we dint price:price
+            //so we used shorthand i.e we dint do price:price
         }) 
         await camp.save();
     }
