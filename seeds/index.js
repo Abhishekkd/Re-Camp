@@ -19,7 +19,7 @@ const dbUrl = process.env.DB_URL||'mongodb://localhost:27017/re-camp';
 //         console.log(err);
 //     })
 
-mongoose.connect(dUrl,{
+mongoose.connect(dbUrl,{
     useNewUrlParser: true, 
     useUnifiedTopology: true
 });
@@ -70,8 +70,8 @@ mongoose.connect(dUrl,{
                   filename: 'ReCamp/bvcrj58rqaz1czgbfkwz',
                 },
                 {
-                  url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639329881/ReCamp/erdufhktj5ingkv8xdqy.png',
-                  filename: 'ReCamp/erdufhktj5ingkv8xdqy',
+                  url: 'https://res.cloudinary.com/doyl9cutp/image/upload/v1639590472/ReCamp/wglf0logp1hqspofvmgx.jpg',
+                  filename: 'ReCamp/wglf0logp1hqspofvmgx',
                 }
                
               ]
